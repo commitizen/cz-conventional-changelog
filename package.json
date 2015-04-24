@@ -1,6 +1,6 @@
 {
   "name": "cz-conventional-changelog",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Commitizen adapter following the conventional-changelog format.",
   "main": "index.js",
   "scripts": {
@@ -8,6 +8,5 @@
   },
   "author": "Jim Cummins <jimthedev@gmail.com>",
   "license": "MIT",
-  "dependencies": {
-  }
+  "dependencies": {}
 }
