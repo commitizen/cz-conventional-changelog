@@ -77,11 +77,7 @@ module.exports = {
 
       // Plug the answers into our template
       // By default, we dedent this for you
-      commit(`${answers.type}(${answers.scope}): ${answers.subject}`.slice(0, 100) + `
-             
-             ` + answers.body.slice(0, 100) + `
-             
-             ` + answers.footer.slice(0, 100));
+      commit(answers.type + '(' + answers.scope + '): ' + answers.subject.slice(0, 100) + '\n\n' + answers.body.slice(0, 100) + '\n\n' + answers.footer.slice(0, 100));
     });
   }
 }
