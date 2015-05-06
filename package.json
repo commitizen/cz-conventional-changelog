@@ -1,12 +1,19 @@
 {
   "name": "cz-conventional-changelog",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "description": "Commitizen adapter following the conventional-changelog format.",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "homepage": "https://github.com/commitizen/cz-conventional-changelog",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/commitizen/cz-conventional-changelog.git"
+  },
   "author": "Jim Cummins <jimthedev@gmail.com>",
   "license": "MIT",
-  "dependencies": {}
+  "dependencies": {
+    "word-wrap": "^1.0.3"
+  }
 }

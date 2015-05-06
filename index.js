@@ -1,3 +1,7 @@
+"format cjs";
+
+var wrap = require('./node_modules/word-wrap/index');
+
 // This can be any kind of SystemJS compatible module.
 // We use Commonjs here, but ES6 or AMD would do just 
 // fine.
@@ -16,7 +20,7 @@ module.exports = {
   // template and will keep empty lines.
   prompter: function(cz, commit) {
 
-    console.log('\nAll commit message lines will be cropped at 100 characters.\n');
+    console.log('\nLine 1 will be cropped at 100 characters. All other lines will be wrapped after 100 characters.\n');
     
     // Let's ask some questions of the user
     // so that we can populate our commit 
@@ -74,10 +78,24 @@ module.exports = {
         message: 'List any breaking changes or issues closed by this change:\n'
       }
     ], function(answers) {
+      
+      var maxLineWidth = 100;
 
-      // Plug the answers into our template
-      // By default, we dedent this for you
-      commit(answers.type + '(' + answers.scope + '): ' + answers.subject.slice(0, 100) + '\n\n' + answers.body.slice(0, 100) + '\n\n' + answers.footer.slice(0, 100));
+      var wrapOptions = {
+        trim: true,
+        newline: '\n',
+        indent:'',
+        width: maxLineWidth
+      };
+
+      // Hard limit this line
+      var head = (answers.type + '(' + answers.scope.trim() + '): ' + answers.subject.trim()).slice(0, maxLineWidth);
+
+      // Wrap these lines at 100 characters
+      var body = wrap(answers.body, wrapOptions);
+      var footer = wrap(answers.footer, wrapOptions);
+
+      commit(head + '\n\n' + body + '\n\n' + footer);
     });
   }
 }
