@@ -1,6 +1,6 @@
 "format cjs";
 
-var wrap = require('./node_modules/word-wrap/index');
+var wrap = require('word-wrap');
 
 // This can be any kind of SystemJS compatible module.
 // We use Commonjs here, but ES6 or AMD would do just 
