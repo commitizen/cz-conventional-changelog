@@ -1,10 +1,11 @@
 {
   "name": "cz-conventional-changelog",
-  "version": "1.1.0",
+  "version": "0.0.0-semantically-released.0",
   "description": "Commitizen adapter following the conventional-changelog format.",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo 'Tests need to be setup!'",
+    "semantic-release": "semantic-release pre && npm publish && semantic-release post"
   },
   "homepage": "https://github.com/commitizen/cz-conventional-changelog",
   "repository": {
@@ -15,5 +16,8 @@
   "license": "MIT",
   "dependencies": {
     "word-wrap": "^1.0.3"
+  },
+  "devDependencies": {
+    "semantic-release": "^4.3.5"
   }
 }
