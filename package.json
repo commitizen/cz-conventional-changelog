@@ -4,6 +4,7 @@
   "description": "Commitizen adapter following the conventional-changelog format.",
   "main": "index.js",
   "scripts": {
+    "commit": "git-cz",
     "test": "echo 'Tests need to be setup!'",
     "semantic-release": "semantic-release pre && npm publish && semantic-release post"
   },
@@ -18,6 +19,10 @@
     "word-wrap": "^1.0.3"
   },
   "devDependencies": {
+    "commitizen": "1.0.5",
     "semantic-release": "^4.3.5"
+  },
+  "czConfig": {
+    "path": "./"
   }
 }
