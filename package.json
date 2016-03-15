@@ -1,5 +1,5 @@
 {
-  "name": "cz-conventional-changelog",
+  "name": "cz-cherrytech-adapter",
   "version": "0.0.0-semantically-released.0",
   "description": "Commitizen adapter following the conventional-changelog format.",
   "main": "index.js",
@@ -8,12 +8,12 @@
     "test": "echo 'Tests need to be setup!'",
     "semantic-release": "semantic-release pre && npm publish && semantic-release post"
   },
-  "homepage": "https://github.com/commitizen/cz-conventional-changelog",
+  "homepage": "https://github.com/billymcintosh/cz-cherrytech-adapter",
   "repository": {
     "type": "git",
-    "url": "https://github.com/commitizen/cz-conventional-changelog.git"
+    "url": "https://github.com/billymcintosh/cz-cherrytech-adapter.git"
   },
-  "author": "Jim Cummins <jimthedev@gmail.com>",
+  "author": "Billy McIntosh <billymcintosh@gmail.com>",
   "license": "MIT",
   "dependencies": {
     "word-wrap": "^1.0.3"
