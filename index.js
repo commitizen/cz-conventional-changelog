@@ -21,7 +21,7 @@ module.exports = {
   prompter: function(cz, commit) {
 
     console.log('\nLine 1 will be cropped at 100 characters. All other lines will be wrapped after 100 characters.\n');
-    
+
     // Let's ask some questions of the user
     // so that we can populate our commit 
     // template. 
@@ -31,11 +31,21 @@ module.exports = {
     // collection library if you prefer.
     cz.prompt([
       {
+        type: 'input',
+        name: 'issues',
+        message: 'Jira Issue ID(s) (required):\n',
+        validate: function(input) {
+          if (!input) {
+            return 'Must specify issue IDs, otherwise, just use a normal commit message';
+          } else {
+            return true;
+          }
+        }
+      }, {
         type: 'list',
         name: 'type',
         message: 'Select the type of change that you\'re committing:',
-        choices: [
-        {
+        choices: [{
           name: 'feat:     A new feature',
           value: 'feat'
         }, {
@@ -78,13 +88,13 @@ module.exports = {
         message: 'List any breaking changes or issues closed by this change:\n'
       }
     ], function(answers) {
-      
+
       var maxLineWidth = 100;
 
       var wrapOptions = {
         trim: true,
         newline: '\n',
-        indent:'',
+        indent: '',
         width: maxLineWidth
       };
 

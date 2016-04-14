@@ -1,19 +1,19 @@
 {
-  "name": "cz-conventional-changelog",
+  "name": "cz-dogus-changelog",
   "version": "0.0.0-semantically-released.0",
-  "description": "Commitizen adapter following the conventional-changelog format.",
+  "description": "Commitizen adapter for dogus digital forked from cz-conventional-changelog",
   "main": "index.js",
   "scripts": {
     "commit": "git-cz",
     "test": "echo 'Tests need to be setup!'",
     "semantic-release": "semantic-release pre && npm publish && semantic-release post"
   },
-  "homepage": "https://github.com/commitizen/cz-conventional-changelog",
+  "homepage": "https://github.com/dogusdigital/cz-dogus-changelog",
   "repository": {
     "type": "git",
-    "url": "https://github.com/commitizen/cz-conventional-changelog.git"
+    "url": "https://github.com/dogusdigital/cz-dogus-changelog.git"
   },
-  "author": "Jim Cummins <jimthedev@gmail.com>",
+  "author": "Vedit Firat Arig <firat@vngrs.com>",
   "license": "MIT",
   "dependencies": {
     "word-wrap": "^1.0.3"
