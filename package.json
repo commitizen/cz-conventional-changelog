@@ -22,7 +22,9 @@
     "commitizen": "1.0.5",
     "semantic-release": "^4.3.5"
   },
-  "czConfig": {
-    "path": "./"
+  "config": {
+    "commitizen": {
+      "path": "./index.js"
+    }
   }
 }
