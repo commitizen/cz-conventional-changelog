@@ -30,11 +30,21 @@ module.exports = {
     // collection library if you prefer.
     cz.prompt([
       {
+        type: 'input',
+        name: 'issues',
+        message: 'Jira Issue ID(s) (required):\n',
+        validate: function(input) {
+          if (!input) {
+            return 'Must specify issue IDs, otherwise, just use a normal commit message';
+          } else {
+            return true;
+          }
+        }
+      }, {
         type: 'list',
         name: 'type',
         message: 'Select the type of change that you\'re committing:',
-        choices: [
-        {
+        choices: [{
           name: 'feat:     A new feature',
           value: 'feat'
         }, {
@@ -83,7 +93,7 @@ module.exports = {
       var wrapOptions = {
         trim: true,
         newline: '\n',
-        indent:'',
+        indent: '',
         width: maxLineWidth
       };
 
@@ -92,7 +102,7 @@ module.exports = {
       scope = scope ? '(' + answers.scope.trim() + ')' : '';
 
       // Hard limit this line
-      var head = (answers.type + scope + ': ' + answers.subject.trim()).slice(0, maxLineWidth);
+      var head = (answers.issues + ' ' + answers.type + scope + ': ' + answers.subject.trim()).slice(0, maxLineWidth);
 
       // Wrap these lines at 100 characters
       var body = wrap(answers.body, wrapOptions);
