@@ -1,6 +1,6 @@
 {
   "name": "cz-dogus-changelog",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Commitizen adapter for dogus digital forked from cz-conventional-changelog",
   "main": "index.js",
   "scripts": {
