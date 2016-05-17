@@ -1,32 +1,43 @@
-import prompt from 'cz-conventional-changelog/prompt';
+import conventionalPrompt from 'cz-conventional-changelog/prompt';
+import conventionalFormat from 'cz-conventional-changelog/format';
 
-import UpdatedCommand from 'lerna/lib/commands/UpdatedCommand';
 import PackageUtilities from 'lerna/lib/PackageUtilities';
+import Repository from 'lerna/lib/Repository';
 
 module.exports = {
   prompter: function(cz, commit) {
-    const updatedCommand = new UpdatedCommand([], {});
+    console.log('\n' + conventionalFormat.help + '\n');
 
-    // We can't use updatedCommand.run() as this will exit TODO: PR to add an option to run specifying whether it'd exit
-    updatedCommand.runValidations();
-    updatedCommand.runPreparations();
-    updatedCommand.initialize(() => {
-      updatedCommand.execute(() => {
-        const updatedPackages = updatedCommand.updates.map((update) => update.package.name);
-        const defaults = {
-          packages: updatedPackages.join(',')
-        };
+    const packagesLocation = new Repository().packagesLocation;
+    const allPackages = PackageUtilities.getPackages(packagesLocation).map((pkg) => pkg.name);
 
-        //var packages = answers.packages.trim();
-        //packages = packages ? '[' + packages + ']' : '';
+    conventionalPrompt(cz, (conventionalAnswers) => {
+      const conventionalChangelogEntry = conventionalFormat.format(conventionalAnswers);
 
-        prompt(cz, (head, body, footer) => {
-          var packages = answers.packages.trim();
-          packages = packages ? '[' + packages + ']' : '';
+      cz.prompt({
+        type: 'checkbox',
+        name: 'packages',
+        'default': [],
+        choices: allPackages,
+        message: 'The packages that this commit has touched\n'
+      }).then(function (packageAnswers) {
+        const messages = [
+          conventionalChangelogEntry.head
+        ];
 
-          commit(head + '\n\n' + body + '\n\n' + footer);
+        const selectedPackages = packageAnswers.packages;
+        if (selectedPackages && selectedPackages.length) {
+          messages.push('affects: ' + selectedPackages.join(', '));
+        }
 
-        });
+        messages.push(conventionalChangelogEntry.body);
+        messages.push(conventionalChangelogEntry.footer);
+
+        const commitMessage = messages.join('\n\n');
+
+        console.log(commitMessage);
+
+        commit(commitMessage);
       });
     });
   }
