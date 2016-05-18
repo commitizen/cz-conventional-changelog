@@ -1,6 +1,6 @@
 {
   "name": "cz-lerna-changelog",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Commitizen adapter following the conventional-changelog format.",
   "main": "lib/index.js",
   "scripts": {
@@ -26,7 +26,7 @@
     "semantic-release": "^4.3.5"
   },
   "directories": {
-    "lib" : "lib"
+    "lib": "lib"
   },
   "config": {
     "commitizen": {
