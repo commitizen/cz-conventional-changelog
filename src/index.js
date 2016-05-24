@@ -19,7 +19,13 @@ module.exports = {
         name: 'packages',
         'default': [],
         choices: allPackages,
-        message: 'The packages that this commit has touched\n'
+        message: 'The packages that this commit has affected\n',
+        validate: function (input) {
+          const type = conventionalAnswers.type;
+          const isRequired = ['feat', 'fix'].indexOf(type) > -1;
+          const isProvided = input.length > 0;
+          return isRequired ? (isProvided ? true : `Commit type "${type}" must affect at least one component`) : true;
+        }
       }).then(function (packageAnswers) {
         const messages = [
           conventionalChangelogEntry.head
