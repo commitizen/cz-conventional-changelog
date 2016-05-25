@@ -12,12 +12,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/jpnelson/cz-lerna-changelog.git"
+    "url": "https://github.com/atlassian/cz-lerna-changelog.git"
   },
   "author": "Joshua Nelson <jonelson@atlassian.com>",
   "dependencies": {
-    "cz-conventional-changelog": "jpnelson/cz-conventional-changelog#fe629d0f",
-    "lerna": "jpnelson/lerna#8c0e5a44"
+    "cz-conventional-changelog": "jpnelson/cz-conventional-changelog#fe629d0f"
+  },
+  "peerDependencies": {
+    "lerna": "*"
   },
   "devDependencies": {
     "babel-cli": "6.8.0",
