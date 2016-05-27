@@ -6,13 +6,11 @@ cache:
 notifications:
   email: false
 node_js:
-  - '4'
-before_install:
-  - npm i -g npm@^2.0.0
+  - stable
 before_script:
   - npm prune
 after_success:
   - npm run semantic-release
 branches:
-  only:
-    - master
+  except:
+    - /^v\d+\.\d+\.\d+$/
