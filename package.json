@@ -17,7 +17,8 @@
   "author": "Joshua Nelson <jonelson@atlassian.com>",
   "dependencies": {
     "cz-conventional-changelog": "jpnelson/cz-conventional-changelog#fe629d0f",
-    "lerna": "jpnelson/lerna#8c0e5a44"
+    "lerna": "jpnelson/lerna#config-concurrency-committed-lib-with-exec",
+    "shelljs": "0.7.0"
   },
   "devDependencies": {
     "babel-cli": "6.8.0",

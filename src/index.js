@@ -4,12 +4,34 @@ import conventionalFormat from 'cz-conventional-changelog/format';
 import PackageUtilities from 'lerna/lib/PackageUtilities';
 import Repository from 'lerna/lib/Repository';
 
+import shell from 'shelljs';
+import path from 'path';
+
+function getAllPackages () {
+  const packagesLocation = new Repository().packagesLocation;
+  return PackageUtilities.getPackages(packagesLocation);
+}
+
+function getChangedComponents () {
+  const changedComponents = [];
+
+  var status = shell.exec('git status . --porcelain', {silent: true}).stdout;
+
+
+  getAllPackages().forEach(function (pkg) {
+    if (status.indexOf(path.relative('.', pkg.location)) !== -1) {
+      changedComponents.push(pkg.name);
+    }
+  });
+
+  return changedComponents;
+}
+
 module.exports = {
   prompter: function(cz, commit) {
     console.log('\n' + conventionalFormat.help + '\n');
 
-    const packagesLocation = new Repository().packagesLocation;
-    const allPackages = PackageUtilities.getPackages(packagesLocation).map((pkg) => pkg.name);
+    const allPackages = getAllPackages().map((pkg) => pkg.name);
 
     conventionalPrompt(cz, (conventionalAnswers) => {
       const conventionalChangelogEntry = conventionalFormat.format(conventionalAnswers);
@@ -17,7 +39,7 @@ module.exports = {
       cz.prompt({
         type: 'checkbox',
         name: 'packages',
-        'default': [],
+        'default': getChangedComponents(),
         choices: allPackages,
         message: 'The packages that this commit has affected\n',
         validate: function (input) {
