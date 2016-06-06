@@ -12,14 +12,26 @@ function getAllPackages () {
   return PackageUtilities.getPackages(packagesLocation);
 }
 
+function isStatusStaged (statusLine) {
+  const modifiedAddedDeletedRenamedCopied = 'MADRC'; // see git status --help (short output format)
+  const status = statusLine.split(' ');
+  const stagedStatus = status[0];
+  return modifiedAddedDeletedRenamedCopied.indexOf(stagedStatus) !== -1;
+}
+
+function isFileStaged (status, file) {
+  const stagedChanges = status.split('\n').filter(isStatusStaged);
+  return stagedChanges.some(function (stagedChange) {
+    return stagedChange.indexOf(file) !== -1;
+  });
+}
+
 function getChangedComponents () {
-  const changedComponents = [];
-
-  var status = shell.exec('git status . --porcelain', {silent: true}).stdout;
-
+  let changedComponents = [];
+  const status = shell.exec('git status . --short', {silent: true}).stdout;
 
   getAllPackages().forEach(function (pkg) {
-    if (status.indexOf(path.relative('.', pkg.location)) !== -1) {
+    if (isFileStaged(status, path.relative('.', pkg.location))) {
       changedComponents.push(pkg.name);
     }
   });
