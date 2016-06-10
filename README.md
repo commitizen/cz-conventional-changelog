@@ -6,3 +6,8 @@ Status:
 [![Build Status](https://img.shields.io/travis/atlassian/cz-lerna-changelog.svg?style=flat-square)](https://travis-ci.org/atlassian/cz-lerna-changelog)
 
 Part of the [commitizen](https://github.com/commitizen/cz-cli) family. Prompts for [conventional changelog](https://github.com/stevemao/conventional-changelog-angular/blob/master/index.js) standard in a [lerna](https://lernajs.io/) environment.
+
+
+Example view (with a few components):
+
+![example view](https://www.evernote.com/l/AAVyZb3cVbpP0oFqYnkpGMAFIbBW3JRGOEUB/image.png)
