@@ -3,10 +3,16 @@
 /**
  * Prompt the user for information about a commit
  * @param cz commitizen object that can prompt the user for input
+ * @param {Object} options [{}] – options to control what is prompted
+ * @param {Object} options.questions – override the questions prompted with. Each key is a name, and each value is the object for the question
  * @param callback a function called with the answers from the prompt (an object containing `scope`, `type`, `subject`,
  *        `body` and `footer`)
  */
-function prompt (cz, callback) {
+function prompt (cz, options, callback) {
+  if (typeof options === 'function') {
+    options = {};
+    callback = options;
+  }
   // Let's ask some questions of the user
   // so that we can populate our commit
   // template.
@@ -14,7 +20,7 @@ function prompt (cz, callback) {
   // See inquirer.js docs for specifics.
   // You can also opt to use another input
   // collection library if you prefer.
-  cz.prompt([
+  var defaultQuestions = [
     {
       type: 'list',
       name: 'type',
@@ -62,7 +68,13 @@ function prompt (cz, callback) {
       name: 'footer',
       message: 'List any breaking changes or issues closed by this change:\n'
     }
-  ]).then(callback);
+  ];
+
+  var questions = defaultQuestions.map(function (defaultQuestion) {
+    return Object.assign(defaultQuestion, (options.questions && options.questions[defaultQuestion.name]) || {});
+  });
+
+  cz.prompt(questions).then(callback);
 }
 
 module.exports = prompt;
