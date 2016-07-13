@@ -16,7 +16,7 @@
   "author": "Joshua Nelson <jonelson@atlassian.com>, Joscha Feth <jfeth@atlassian.com>",
   "license": "MIT",
   "dependencies": {
-    "cz-conventional-changelog": "jpnelson/cz-conventional-changelog#fe629d0f",
+    "cz-conventional-changelog": "jpnelson/cz-conventional-changelog#a9a5468d",
     "shelljs": "0.7.0"
   },
   "peerDependencies": {

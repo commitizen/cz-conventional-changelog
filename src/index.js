@@ -40,12 +40,17 @@ function getChangedComponents () {
 }
 
 module.exports = {
-  prompter: function(cz, commit) {
+  prompter: function(cz, options, commit) {
+    if (typeof options === 'function') {
+      options = {};
+      commit = options;
+    }
+
     console.log('\n' + conventionalFormat.help + '\n');
 
     const allPackages = getAllPackages().map((pkg) => pkg.name);
 
-    conventionalPrompt(cz, (conventionalAnswers) => {
+    conventionalPrompt(cz, options, (conventionalAnswers) => {
       const conventionalChangelogEntry = conventionalFormat.format(conventionalAnswers);
 
       cz.prompt({
