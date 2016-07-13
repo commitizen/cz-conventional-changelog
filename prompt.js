@@ -10,8 +10,8 @@
  */
 function prompt (cz, options, callback) {
   if (typeof options === 'function') {
-    options = {};
     callback = options;
+    options = {};
   }
   // Let's ask some questions of the user
   // so that we can populate our commit
