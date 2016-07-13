@@ -42,8 +42,8 @@ function getChangedComponents () {
 module.exports = {
   prompter: function(cz, options, commit) {
     if (typeof options === 'function') {
-      options = {};
       commit = options;
+      options = {};
     }
 
     console.log('\n' + conventionalFormat.help + '\n');
