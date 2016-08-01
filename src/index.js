@@ -58,7 +58,7 @@ module.exports = {
         name: 'packages',
         'default': getChangedComponents(),
         choices: allPackages,
-        message: 'The packages that this commit has affected\n',
+        message: `The packages that this commit has affected (${getChangedComponents().length} detected)\n`,
         validate: function (input) {
           const type = conventionalAnswers.type;
           const isRequired = ['feat', 'fix'].indexOf(type) > -1;
