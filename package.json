@@ -24,8 +24,8 @@
     "word-wrap": "^1.0.3"
   },
   "devDependencies": {
-    "commitizen": "1.0.5",
-    "semantic-release": "^4.3.5"
+    "commitizen": "2.8.6",
+    "semantic-release": "^6.3.2"
   },
   "czConfig": {
     "path": "./"
