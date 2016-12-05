@@ -12,31 +12,23 @@ function getAllPackages () {
   return PackageUtilities.getPackages(packagesLocation);
 }
 
-function isStatusStaged (statusLine) {
-  const modifiedAddedDeletedRenamedCopied = 'MADRC'; // see git status --help (short output format)
-  const status = statusLine.split(' ');
-  const stagedStatus = status[0];
-  return modifiedAddedDeletedRenamedCopied.indexOf(stagedStatus) !== -1;
-}
+function getChangedPackages () {
+  const changedFiles = shell.exec('git diff --cached --name-only', {silent: true})
+    .stdout
+    .split('\n');
 
-function isFileStaged (status, file) {
-  const stagedChanges = status.split('\n').filter(isStatusStaged);
-  return stagedChanges.some(function (stagedChange) {
-    return stagedChange.indexOf(file) !== -1;
-  });
-}
-
-function getChangedComponents () {
-  let changedComponents = [];
-  const status = shell.exec('git status . --short', {silent: true}).stdout;
-
-  getAllPackages().forEach(function (pkg) {
-    if (isFileStaged(status, path.relative('.', pkg.location))) {
-      changedComponents.push(pkg.name);
-    }
-  });
-
-  return changedComponents;
+  return getAllPackages()
+    .filter(function (pkg) {
+      const packagePrefix = path.relative('.', pkg.location) + path.sep;
+      for (let changedFile of changedFiles) {
+        if (changedFile.indexOf(packagePrefix) === 0) {
+          return true;
+        }
+      }
+    })
+    .map(function (pkg) {
+      return pkg.name
+    });
 }
 
 module.exports = {
@@ -56,9 +48,9 @@ module.exports = {
       cz.prompt({
         type: 'checkbox',
         name: 'packages',
-        'default': getChangedComponents(),
+        'default': getChangedPackages(),
         choices: allPackages,
-        message: `The packages that this commit has affected (${getChangedComponents().length} detected)\n`,
+        message: `The packages that this commit has affected (${getChangedPackages().length} detected)\n`,
         validate: function (input) {
           const type = conventionalAnswers.type;
           const isRequired = ['feat', 'fix'].indexOf(type) > -1;
