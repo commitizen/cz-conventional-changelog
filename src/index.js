@@ -8,8 +8,7 @@ import shell from 'shelljs';
 import path from 'path';
 
 function getAllPackages () {
-  const packagesLocation = new Repository().packagesLocation;
-  return PackageUtilities.getPackages(packagesLocation);
+  return PackageUtilities.getPackages(new Repository());
 }
 
 function getChangedPackages () {
