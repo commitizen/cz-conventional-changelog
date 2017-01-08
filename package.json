@@ -24,7 +24,7 @@
     "word-wrap": "^1.0.3"
   },
   "devDependencies": {
-    "commitizen": "2.9.4",
+    "commitizen": "2.9.5",
     "semantic-release": "^6.3.2"
   },
   "czConfig": {
