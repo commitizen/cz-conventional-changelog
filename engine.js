@@ -32,7 +32,8 @@ module.exports = function (options) {
     //
     // By default, we'll de-indent your commit
     // template and will keep empty lines.
-    prompter: function(cz, commit) {
+    prompter: function (cz, commit) {
+
       console.log('\nLine 1 will be cropped at 100 characters. All other lines will be wrapped after 100 characters.\n');
 
       // Let's ask some questions of the user
@@ -65,7 +66,7 @@ module.exports = function (options) {
           name: 'footer',
           message: 'List any breaking changes or issues closed by this change:\n'
         }
-      ]).then(function(answers) {
+      ]).then(function (answers) {
 
         var maxLineWidth = 100;
 
@@ -80,8 +81,15 @@ module.exports = function (options) {
         var scope = answers.scope.trim();
         scope = scope ? '(' + answers.scope.trim() + ')' : '';
 
+        var ending = answers.subject.trim().slice(-9);
+        var hasSkip = ending === '[ci skip]' || ending === '[skip ci]';
+        var addSkip = !hasSkip && (answers.type === 'docs' || answers.type === 'chore');
+
         // Hard limit this line
-        var head = (answers.type + scope + ': ' + answers.subject.trim()).slice(0, maxLineWidth);
+        var head = (answers.type + scope + ': ' + answers.subject.trim())
+          .slice(0, addSkip ? maxLineWidth - 10 : maxLineWidth);
+
+        if (addSkip) head += ' [ci skip]';
 
         // Wrap these lines at 100 characters
         var body = wrap(answers.body, wrapOptions);
