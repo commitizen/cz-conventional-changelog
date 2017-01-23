@@ -1,5 +1,4 @@
-import conventionalPrompt from 'cz-conventional-changelog/prompt';
-import conventionalFormat from 'cz-conventional-changelog/format';
+import conventionalChangelog from 'cz-conventional-changelog';
 
 import PackageUtilities from 'lerna/lib/PackageUtilities';
 import Repository from 'lerna/lib/Repository';
@@ -31,18 +30,12 @@ function getChangedPackages () {
 }
 
 module.exports = {
-  prompter: function(cz, options, commit) {
-    if (typeof options === 'function') {
-      commit = options;
-      options = {};
-    }
-
-    console.log('\n' + conventionalFormat.help + '\n');
+  prompter: function(cz, commit) {
 
     const allPackages = getAllPackages().map((pkg) => pkg.name);
 
-    conventionalPrompt(cz, options, (conventionalAnswers) => {
-      const conventionalChangelogEntry = conventionalFormat.format(conventionalAnswers);
+    conventionalChangelog.prompter(cz, (commitMessage) => {
+      const [messageHead, ...restOfMessageParts] = commitMessage.split('\n\n');
 
       cz.prompt({
         type: 'checkbox',
@@ -51,14 +44,14 @@ module.exports = {
         choices: allPackages,
         message: `The packages that this commit has affected (${getChangedPackages().length} detected)\n`,
         validate: function (input) {
-          const type = conventionalAnswers.type;
-          const isRequired = ['feat', 'fix'].indexOf(type) > -1;
+          const type = commitMessage.type;
+          const isRequired = ['feat', 'fix'].some((type) => messageHead.indexOf(type) === 0);
           const isProvided = input.length > 0;
           return isRequired ? (isProvided ? true : `Commit type "${type}" must affect at least one component`) : true;
         }
       }).then(function (packageAnswers) {
         const messages = [
-          conventionalChangelogEntry.head
+          messageHead
         ];
 
         const selectedPackages = packageAnswers.packages;
@@ -66,14 +59,13 @@ module.exports = {
           messages.push('affects: ' + selectedPackages.join(', '));
         }
 
-        messages.push(conventionalChangelogEntry.body);
-        messages.push(conventionalChangelogEntry.footer);
+        messages.push(...restOfMessageParts);
 
-        const commitMessage = messages.join('\n\n');
+        const modifiedCommitMessage = messages.join('\n\n');
 
-        console.log(commitMessage);
+        console.log(modifiedCommitMessage);
 
-        commit(commitMessage);
+        commit(modifiedCommitMessage);
       });
     });
   }
