@@ -5,6 +5,12 @@ var map = require('lodash.map');
 var longest = require('longest');
 var rightPad = require('right-pad');
 
+var filter = function(array) {
+  return array.filter(function(x) {
+    return x;
+  });
+};
+
 // This can be any kind of SystemJS compatible module.
 // We use Commonjs here, but ES6 or AMD would do just
 // fine.
@@ -62,8 +68,12 @@ module.exports = function (options) {
           message: 'Provide a longer description of the change:\n'
         }, {
           type: 'input',
-          name: 'footer',
-          message: 'List any breaking changes or issues closed by this change:\n'
+          name: 'breaking',
+          message: 'List any breaking changes:\n'
+        }, {
+          type: 'input',
+          name: 'issues',
+          message: 'List any issues closed by this change:\n'
         }
       ]).then(function(answers) {
 
@@ -85,7 +95,15 @@ module.exports = function (options) {
 
         // Wrap these lines at 100 characters
         var body = wrap(answers.body, wrapOptions);
-        var footer = wrap(answers.footer, wrapOptions);
+
+        // Apply breaking change prefix, removing it if already present
+        var breaking = answers.breaking.trim();
+        breaking = breaking ? 'BREAKING CHANGE: ' + breaking.replace(/^BREAKING CHANGE: /, '') : '';
+        breaking = wrap(breaking, wrapOptions);
+
+        var issues = wrap(answers.issues, wrapOptions);
+
+        var footer = filter([ breaking, issues ]).join('\n\n');
 
         commit(head + '\n\n' + body + '\n\n' + footer);
       });
