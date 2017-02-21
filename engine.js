@@ -64,6 +64,10 @@ module.exports = function (options) {
           message: 'Write a short, imperative tense description of the change:\n'
         }, {
           type: 'input',
+          name: 'breaking',
+          message: 'Does your change include a breaking change? [y/n]:\n'
+        }, {
+          type: 'input',
           name: 'body',
           message: 'Provide a longer description of the change:\n'
         }, {
@@ -85,6 +89,11 @@ module.exports = function (options) {
           indent:'',
           width: maxLineWidth
         };
+
+        var breaking = answers.breaking[0].trim().toLowerCase() === 'y';
+        if (breaking) {
+            answers.body = "BREAKING CHANGE: " + answers.body;
+        }
 
         // parentheses are only needed when a scope is present
         var scope = answers.scope.trim();
