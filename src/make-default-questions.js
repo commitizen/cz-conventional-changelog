@@ -19,14 +19,9 @@ module.exports = (allPackages, changedPackages) => ([
     ],
   },
   {
-    type: 'autocomplete',
+    type: 'input',
     name: 'scope',
     message: 'Denote the scope of this change:',
-    choices: [
-      {value: 'build',    name: 'build:     🔨  Changes to the build system'},
-      {value: 'package',  name: 'package:   📦  Updated dependencies or changed a package.json file'},
-      {value: 'docs',     name: 'docs:      📖  Changes to documentation'},
-    ]
   },
   {
     type: 'input',

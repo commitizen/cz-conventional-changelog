@@ -7,7 +7,7 @@ import autocomplete from 'inquirer-autocomplete-prompt';
 import Repository from 'lerna/lib/Repository';
 import PackageUtilities from 'lerna/lib/PackageUtilities';
 
-import questions from './questions';
+import makeDefaultQuestions from './make-default-questions';
 import autocompleteQuestions from './autocomplete-questions';
 
 function getAllPackages () {
@@ -46,22 +46,35 @@ function getCommitTypeMessage (type) {
   }
   return {
     patch: '🛠  This commit indicates a patch release (0.0.X)',
-    minor: '✨  This commit indiates a minor release (0.X.0)',
+    minor: '✨  This commit indicates a minor release (0.X.0)',
     major: '💥  This commit indicates a major release (X.0.0)',
   }[type];
 }
 
-module.exports = {
-  prompter: function(cz, commit) {
+function mergeQuestions(defaultQuestions, customQuestions) {
+  const questions = [];
+  defaultQuestions.forEach(question => {
+    const matchingCustomQuestions = customQuestions.filter(({ name: customQuestionName }) => (customQuestionName === question.name));
+    const customQuestion = matchingCustomQuestions.length > 0 && matchingCustomQuestions[0]
+    questions.push(customQuestion || question);
+  });
+  return questions;
+}
+
+function makePrompter(makeCustomQuestions = () => []) {
+  return function(cz, commit) {
     const allPackages = getAllPackages().map((pkg) => pkg.name);
     const changedPackages = getChangedPackages();
-    const rawQuestions = questions(allPackages, changedPackages);
 
-    cz.registerPrompt('autocomplete', autocomplete);
+    const defaultQuestions = makeDefaultQuestions(allPackages, changedPackages);
+    const customQuestions = makeCustomQuestions(allPackages, changedPackages);
+    const questions = mergeQuestions(defaultQuestions, customQuestions);
+
     console.log('\n\nLine 1 will be cropped at 100 characters. All other lines will be wrapped after 100 characters.\n');
 
+    cz.registerPrompt('autocomplete', autocomplete);
     cz.prompt(
-      autocompleteQuestions(rawQuestions)
+      autocompleteQuestions(questions)
     ).then((answers) => {
       const affectsLine = makeAffectsLine(answers);
       if (affectsLine) {
@@ -81,4 +94,9 @@ module.exports = {
       });
     });
   }
+}
+
+module.exports = {
+  prompter: makePrompter(),
+  makePrompter: makePrompter,
 };
