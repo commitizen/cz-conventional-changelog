@@ -1,10 +1,14 @@
-import conventionalChangelog from 'cz-conventional-changelog';
-
-import PackageUtilities from 'lerna/lib/PackageUtilities';
-import Repository from 'lerna/lib/Repository';
-
 import shell from 'shelljs';
 import path from 'path';
+import commitAnalyzer from '@semantic-release/commit-analyzer';
+import chalk from 'chalk';
+import buildCommit from 'cz-customizable/buildCommit';
+import autocomplete from 'inquirer-autocomplete-prompt';
+import Repository from 'lerna/lib/Repository';
+import PackageUtilities from 'lerna/lib/PackageUtilities';
+
+import questions from './questions';
+import autocompleteQuestions from './autocomplete-questions';
 
 function getAllPackages () {
   return PackageUtilities.getPackages(new Repository());
@@ -29,43 +33,51 @@ function getChangedPackages () {
     });
 }
 
+function makeAffectsLine (answers) {
+  const selectedPackages = answers.packages;
+  if (selectedPackages && selectedPackages.length) {
+    return `affects: ${selectedPackages.join(', ')}`;
+  }
+}
+
+function getCommitTypeMessage (type) {
+  if (!type) {
+    return 'This commit does not indicate any release'
+  }
+  return {
+    patch: '🛠  This commit indicates a patch release (0.0.X)',
+    minor: '✨  This commit indiates a minor release (0.X.0)',
+    major: '💥  This commit indicates a major release (X.0.0)',
+  }[type];
+}
+
 module.exports = {
   prompter: function(cz, commit) {
-
     const allPackages = getAllPackages().map((pkg) => pkg.name);
+    const changedPackages = getChangedPackages();
+    const rawQuestions = questions(allPackages, changedPackages);
 
-    conventionalChangelog.prompter(cz, (commitMessage) => {
-      const [messageHead, ...restOfMessageParts] = commitMessage.split('\n\n');
+    cz.registerPrompt('autocomplete', autocomplete);
+    console.log('\n\nLine 1 will be cropped at 100 characters. All other lines will be wrapped after 100 characters.\n');
 
-      cz.prompt({
-        type: 'checkbox',
-        name: 'packages',
-        'default': getChangedPackages(),
-        choices: allPackages,
-        message: `The packages that this commit has affected (${getChangedPackages().length} detected)\n`,
-        validate: function (input) {
-          const type = commitMessage.type;
-          const isRequired = ['feat', 'fix'].some((type) => messageHead.indexOf(type) === 0);
-          const isProvided = input.length > 0;
-          return isRequired ? (isProvided ? true : `Commit type "${type}" must affect at least one component`) : true;
-        }
-      }).then(function (packageAnswers) {
-        const messages = [
-          messageHead
-        ];
-
-        const selectedPackages = packageAnswers.packages;
-        if (selectedPackages && selectedPackages.length) {
-          messages.push('affects: ' + selectedPackages.join(', '));
-        }
-
-        messages.push(...restOfMessageParts);
-
-        const modifiedCommitMessage = messages.join('\n\n');
-
-        console.log(modifiedCommitMessage);
-
-        commit(modifiedCommitMessage);
+    cz.prompt(
+      autocompleteQuestions(rawQuestions)
+    ).then((answers) => {
+      const affectsLine = makeAffectsLine(answers);
+      if (affectsLine) {
+        answers.body = `${affectsLine}\n` + answers.body;
+      }
+      const message = buildCommit(answers);
+      const type = commitAnalyzer({}, {
+        commits: [{
+          hash: '',
+          message,
+        }],
+      }, (err, type) => {
+        console.log(chalk.green(`\n${getCommitTypeMessage(type)}\n`));
+        console.log('\n\nCommit message:');
+        console.log(chalk.blue(`\n\n${message}\n`));
+        commit(message)
       });
     });
   }
