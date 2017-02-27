@@ -42,7 +42,7 @@ module.exports = (allPackages, changedPackages) => ([
   {
     type: 'input',
     name: 'breaking',
-    message: 'List any BREAKING CHANGES (optional):\n',
+    message: 'List any BREAKING CHANGES (if none, leave blank):\n',
   },
   {
     type: 'input',
