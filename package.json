@@ -17,7 +17,7 @@
   "license": "MIT",
   "dependencies": {
     "conventional-commit-types": "^2.0.0",
-    "lodash.map": "^4.5.1",
+    "lodash.map": "^4.6.0",
     "longest": "^1.0.1",
     "pad-right": "^0.2.2",
     "right-pad": "^1.0.1",
