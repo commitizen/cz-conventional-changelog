@@ -56,6 +56,14 @@ module.exports = function (options) {
           message: 'Select the type of change that you\'re committing:',
           choices: choices
         }, {
+          type: 'confirm',
+          name: 'skipCI',
+          message: 'Should CI (tests or builds) be skipped for this commit?',
+          default: true,
+          when: function (answers) {
+            return answers.type === 'docs' || answers.type === 'chore'
+          }
+        }, {
           type: 'input',
           name: 'scope',
           message: 'Denote the scope of this change ($location, $browser, $compile, etc.):\n'
@@ -91,9 +99,14 @@ module.exports = function (options) {
         var scope = answers.scope.trim();
         scope = scope ? '(' + answers.scope.trim() + ')' : '';
 
-        var ending = answers.subject.trim().slice(-9);
-        var hasSkip = ending === '[ci skip]' || ending === '[skip ci]';
-        var addSkip = !hasSkip && (answers.type === 'docs' || answers.type === 'chore');
+        var hasSkip = ['[ci skip]', '[skip ci]'].some(v => {
+          return (
+            answers.subject.indexOf(v) > -1 ||
+            answers.body.indexOf(v) > -1
+          )
+        });
+        
+        var addSkip = !hasSkip && answers.skipCI
 
         // Hard limit this line
         var head = (answers.type + scope + ': ' + answers.subject.trim())
