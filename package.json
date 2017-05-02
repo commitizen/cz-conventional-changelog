@@ -21,7 +21,7 @@
     "longest": "^1.0.1",
     "pad-right": "^0.2.2",
     "right-pad": "^1.0.1",
-    "word-wrap": "^1.0.3"
+    "word-wrap": "^1.2.2"
   },
   "devDependencies": {
     "commitizen": "2.9.6",
