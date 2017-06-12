@@ -16,7 +16,7 @@
   "author": "Jim Cummins <jimthedev@gmail.com>",
   "license": "MIT",
   "dependencies": {
-    "conventional-commit-types": "^2.0.0",
+    "conventional-commit-types": "^2.1.0",
     "lodash.map": "^4.5.1",
     "longest": "^1.0.1",
     "pad-right": "^0.2.2",
