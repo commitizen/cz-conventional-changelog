@@ -57,7 +57,7 @@ module.exports = function (options) {
         }, {
           type: 'input',
           name: 'scope',
-          message: 'What is the scope of this change (e.g. component or file name):\n'
+          message: 'What is the scope of this change (e.g. component or file name)? (press enter to skip)\n'
         }, {
           type: 'input',
           name: 'subject',
@@ -65,7 +65,7 @@ module.exports = function (options) {
         }, {
           type: 'input',
           name: 'body',
-          message: 'Provide a longer description of the change:\n'
+          message: 'Provide a longer description of the change: (press enter to skip)\n'
         }, {
           type: 'confirm',
           name: 'isBreaking',
@@ -74,7 +74,7 @@ module.exports = function (options) {
         }, {
           type: 'input',
           name: 'breaking',
-          message: 'List breaking changes (one per line):\n',
+          message: 'Describe the breaking changes:\n',
           when: function(answers) {
             return answers.isBreaking;
           }
