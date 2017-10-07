@@ -11,10 +11,6 @@ var filter = function(array) {
   });
 };
 
-process.on('unhandledRejection', error => {
-  console.log('unhandledRejection', error);
-});
-
 // This can be any kind of SystemJS compatible module.
 // We use Commonjs here, but ES6 or AMD would do just
 // fine.
