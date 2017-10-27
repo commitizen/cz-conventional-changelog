@@ -57,7 +57,7 @@ module.exports = function (options) {
         }, {
           type: 'input',
           name: 'scope',
-          message: 'Denote the scope of this change ($location, $browser, $compile, etc.):\n'
+          message: 'What is the scope of this change (e.g. component or file name)? (press enter to skip)\n'
         }, {
           type: 'input',
           name: 'subject',
@@ -65,15 +65,31 @@ module.exports = function (options) {
         }, {
           type: 'input',
           name: 'body',
-          message: 'Provide a longer description of the change:\n'
+          message: 'Provide a longer description of the change: (press enter to skip)\n'
+        }, {
+          type: 'confirm',
+          name: 'isBreaking',
+          message: 'Are there any breaking changes?',
+          default: false
         }, {
           type: 'input',
           name: 'breaking',
-          message: 'List any breaking changes:\n'
+          message: 'Describe the breaking changes:\n',
+          when: function(answers) {
+            return answers.isBreaking;
+          }
+        }, {
+          type: 'confirm',
+          name: 'isIssueAffected',
+          message: 'Does this change affect any open issues?',
+          default: false
         }, {
           type: 'input',
           name: 'issues',
-          message: 'List any issues closed by this change:\n'
+          message: 'Add issue references (e.g. "fix #123", "re #123".):\n',
+          when: function(answers) {
+            return answers.isIssueAffected;
+          }
         }
       ]).then(function(answers) {
 
@@ -97,11 +113,11 @@ module.exports = function (options) {
         var body = wrap(answers.body, wrapOptions);
 
         // Apply breaking change prefix, removing it if already present
-        var breaking = answers.breaking.trim();
+        var breaking = answers.breaking ? answers.breaking.trim() : '';
         breaking = breaking ? 'BREAKING CHANGE: ' + breaking.replace(/^BREAKING CHANGE: /, '') : '';
         breaking = wrap(breaking, wrapOptions);
 
-        var issues = wrap(answers.issues, wrapOptions);
+        var issues = answers.issues ? wrap(answers.issues, wrapOptions) : '';
 
         var footer = filter([ breaking, issues ]).join('\n\n');
 
