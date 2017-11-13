@@ -3,6 +3,16 @@
 var engine = require('./engine');
 var conventionalCommitTypes = require('conventional-commit-types');
 
+var findConfig = require('find-config');
+var get = require('lodash.get');
+
+var maxLineWidths = Object.assign(
+  { head: 100, body: 100 },
+  get(
+    findConfig.require('package.json', { home: false }),
+    'config.cz-conventional-changelog.maxLineWidths'));
+
 module.exports = engine({
-  types: conventionalCommitTypes.types
+  types: conventionalCommitTypes.types,
+  maxLineWidths: maxLineWidths
 });
