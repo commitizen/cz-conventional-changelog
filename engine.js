@@ -11,6 +11,10 @@ var filter = function(array) {
   });
 };
 
+var randomInt = (min, max) => {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+};
+
 // This can be any kind of SystemJS compatible module.
 // We use Commonjs here, but ES6 or AMD would do just
 // fine.
@@ -26,6 +30,18 @@ module.exports = function (options) {
     };
   });
 
+  var searchTypes = (answers, input) => {
+    input = input || '';
+    return new Promise(function(resolve) {
+      setTimeout(function() {
+        const filtered = choices
+                          .filter(a => a.value.toLowerCase().includes(input))
+                          .map(a => a.name);
+        resolve(filtered);
+        }, 150);
+      });
+    };
+
   return {
     // When a user runs `git cz`, prompter will
     // be executed. We pass you cz, which currently
@@ -39,6 +55,7 @@ module.exports = function (options) {
     // By default, we'll de-indent your commit
     // template and will keep empty lines.
     prompter: function(cz, commit) {
+      cz.prompt.registerPrompt('autocomplete', require('inquirer-autocomplete-prompt'));
       console.log('\nLine 1 will be cropped at 100 characters. All other lines will be wrapped after 100 characters.\n');
 
       // Let's ask some questions of the user
@@ -50,10 +67,11 @@ module.exports = function (options) {
       // collection library if you prefer.
       cz.prompt([
         {
-          type: 'list',
+          type: 'autocomplete',
           name: 'type',
           message: 'Select the type of change that you\'re committing:',
-          choices: choices
+          source: searchTypes,
+          pageSize: 4,
         }, {
           type: 'input',
           name: 'scope',
