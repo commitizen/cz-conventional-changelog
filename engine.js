@@ -53,19 +53,23 @@ module.exports = function (options) {
           type: 'list',
           name: 'type',
           message: 'Select the type of change that you\'re committing:',
-          choices: choices
+          choices: choices,
+          default: options.defaultType
         }, {
           type: 'input',
           name: 'scope',
-          message: 'What is the scope of this change (e.g. component or file name)? (press enter to skip)\n'
+          message: 'What is the scope of this change (e.g. component or file name)? (press enter to skip)\n',
+          default: options.defaultScope
         }, {
           type: 'input',
           name: 'subject',
-          message: 'Write a short, imperative tense description of the change:\n'
+          message: 'Write a short, imperative tense description of the change:\n',
+          default: options.defaultSubject
         }, {
           type: 'input',
           name: 'body',
-          message: 'Provide a longer description of the change: (press enter to skip)\n'
+          message: 'Provide a longer description of the change: (press enter to skip)\n',
+          default: options.defaultBody
         }, {
           type: 'confirm',
           name: 'isBreaking',
@@ -82,14 +86,15 @@ module.exports = function (options) {
           type: 'confirm',
           name: 'isIssueAffected',
           message: 'Does this change affect any open issues?',
-          default: false
+          default: options.defaultIssues ? true : false
         }, {
           type: 'input',
           name: 'issues',
           message: 'Add issue references (e.g. "fix #123", "re #123".):\n',
           when: function(answers) {
             return answers.isIssueAffected;
-          }
+          },
+          default: options.defaultIssues ? options.defaultIssues : undefined
         }
       ]).then(function(answers) {
 
