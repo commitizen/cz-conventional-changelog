@@ -23,7 +23,7 @@
     "word-wrap": "^1.0.3"
   },
   "devDependencies": {
-    "commitizen": "2.9.6",
+    "commitizen": "2.10.0",
     "semantic-release": "^6.3.2"
   },
   "config": {
