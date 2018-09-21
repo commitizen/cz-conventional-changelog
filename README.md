@@ -1,5 +1,12 @@
 # cz-lerna-changelog
 
+## 2.0.0
+
+Version 2.0.0 is compatible with lerna version 3 only, if you need support for lerna 2 (more specifically, lerna 2.0.0.beta.31).
+
+Please note that this repository is not actively maintained as it's not actively used here. We are more than happy to accept PRs however. 😀
+
+
 Status:
 [![npm version](https://img.shields.io/npm/v/cz-lerna-changelog.svg?style=flat-square)](https://www.npmjs.org/package/cz-lerna-changelog)
 [![npm downloads](https://img.shields.io/npm/dm/cz-lerna-changelog.svg?style=flat-square)](http://npm-stat.com/charts.html?package=cz-lerna-changelog&from=2015-08-01)

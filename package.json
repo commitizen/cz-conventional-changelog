@@ -2,6 +2,7 @@
   "name": "cz-lerna-changelog",
   "description": "Commitizen adapter following the conventional-changelog format.",
   "main": "lib/index.js",
+  "version": "2.0.0",
   "scripts": {
     "build": "babel src -d lib",
     "commit": "git-cz",
