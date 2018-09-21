@@ -1,6 +1,6 @@
 import assert from 'assert';
 import shell from 'shelljs';
-import PackageUtilities from 'lerna/lib/PackageUtilities';
+const Project = require("@lerna/project");
 
 import stub from './_stub';
 import { prompter, makePrompter } from '../src/index';
@@ -28,7 +28,7 @@ const createMockCommitizenCli = (answers) => ({
 
 describe('cz-lerna-changelog', () => {
   stub(shell, 'exec', () => ({ stdout: '' }));
-  stub(PackageUtilities, 'getPackages', () => ([{
+  stub(Project, 'getPackages', () => ([{
     name: 'test-package',
     location: 'packages/test-package'
   }]));
