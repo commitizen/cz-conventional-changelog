@@ -1,6 +1,6 @@
 import shell from 'shelljs';
 import path from 'path';
-import commitAnalyzer from '@semantic-release/commit-analyzer';
+import { analyzeCommits } from '@semantic-release/commit-analyzer';
 import chalk from 'chalk';
 import buildCommit from 'cz-customizable/buildCommit';
 import autocomplete from 'inquirer-autocomplete-prompt';
@@ -9,12 +9,16 @@ const { getPackages } = require("@lerna/project");
 import makeDefaultQuestions from './make-default-questions';
 import autocompleteQuestions from './autocomplete-questions';
 
-function getAllPackages () {
+const commitAnalyzer = (props, commits, then) => analyzeCommits(props, commits)
+  .then((result) => then(null, result))
+  .catch(then)
+
+function getAllPackages() {
   return getPackages();
 }
 
-function getChangedPackages (allPackages) {
-  const changedFiles = shell.exec('git diff --cached --name-only', {silent: true})
+function getChangedPackages(allPackages) {
+  const changedFiles = shell.exec('git diff --cached --name-only', { silent: true })
     .stdout
     .split('\n');
 
@@ -32,14 +36,14 @@ function getChangedPackages (allPackages) {
     });
 }
 
-function makeAffectsLine (answers) {
+function makeAffectsLine(answers) {
   const selectedPackages = answers.packages;
   if (selectedPackages && selectedPackages.length) {
     return `affects: ${selectedPackages.join(', ')}`;
   }
 }
 
-function getCommitTypeMessage (type) {
+function getCommitTypeMessage(type) {
   if (!type) {
     return 'This commit does not indicate any release'
   }
@@ -61,17 +65,17 @@ function mergeQuestions(defaultQuestions, customQuestions) {
 }
 
 function makePrompter(makeCustomQuestions = () => []) {
-  return function(cz, commit) {
+  return function (cz, commit) {
     getAllPackages().then(pkgs => {
       const allPackages = pkgs.map(pkg => pkg.name);
       const changedPackages = getChangedPackages(pkgs);
-  
+
       const defaultQuestions = makeDefaultQuestions(allPackages, changedPackages);
       const customQuestions = makeCustomQuestions(allPackages, changedPackages);
       const questions = mergeQuestions(defaultQuestions, customQuestions);
-  
+
       console.log('\n\nLine 1 will be cropped at 100 characters. All other lines will be wrapped after 100 characters.\n');
-  
+
       cz.registerPrompt('autocomplete', autocomplete);
       cz.prompt(
         autocompleteQuestions(questions)
