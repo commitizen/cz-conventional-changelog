@@ -117,7 +117,7 @@ module.exports = function (options) {
 
         var footer = filter([ breaking, issues ]).join('\n\n');
 
-        commit(head + '\n\n to_human:' + body + '\n\n' + footer);
+        commit(head + '\n\n to_human: ' + body + '\n\n' + footer);
       });
     }
   };
