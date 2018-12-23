@@ -63,7 +63,7 @@ module.exports = function (options) {
         }, {
           type: 'input',
           name: 'body',
-          message: 'Provide a longer description of the change for tomorrow\'s standup meeting: (press enter to skip)\n',
+          message: 'Provide a longer human description of the change for tomorrow\'s standup meeting: (press enter to skip)\n',
           default: options.defaultBody
         }, {
           type: 'confirm',
