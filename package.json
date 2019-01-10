@@ -6,7 +6,7 @@
   "scripts": {
     "commit": "git-cz",
     "test": "echo 'Tests need to be setup!'",
-    "semantic-release": "semantic-release pre && npm publish && semantic-release post"
+    "semantic-release": "semantic-release"
   },
   "homepage": "https://github.com/commitizen/cz-conventional-changelog",
   "repository": {
@@ -16,6 +16,7 @@
   "author": "Jim Cummins <jimthedev@gmail.com>",
   "license": "MIT",
   "dependencies": {
+    "chalk": "^2.4.1",
     "conventional-commit-types": "^2.0.0",
     "lodash.map": "^4.5.1",
     "longest": "^1.0.1",
@@ -23,11 +24,11 @@
     "word-wrap": "^1.0.3"
   },
   "devDependencies": {
-    "commitizen": "2.9.6",
-    "semantic-release": "^6.3.2"
+    "commitizen": "^2.10.1",
+    "semantic-release": "^15.13.3"
   },
   "config": {
-    "commitizen" : {
+    "commitizen": {
       "path": "./index.js"
     }
   }
