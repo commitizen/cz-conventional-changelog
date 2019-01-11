@@ -1,66 +1,68 @@
-const engine = require('./engine');
-const types = require('conventional-commit-types').types;
-const chalk = require('chalk');
+var engine = require('./engine');
+var types = require('conventional-commit-types').types;
+var chalk = require('chalk');
+var chai = require('chai');
+var expect = chai.expect;
 
-const defaultOptions = {
+var defaultOptions = {
   types,
   maxLineWidth: 100,
   maxHeaderWidth: 100
 };
 
-const type = 'func';
-const scope = 'everything';
-const subject = 'testing123';
-const subject2 = 'after the fall, I was gone';
-const longBody =
+var type = 'func';
+var scope = 'everything';
+var subject = 'testing123';
+var subject2 = 'after the fall, I was gone';
+var longBody =
   'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa' +
   'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa' +
   'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa';
-const longBodySplit =
+var longBodySplit =
   longBody.slice(0, defaultOptions.maxLineWidth) +
   '\n' +
   longBody.slice(defaultOptions.maxLineWidth, longBody.length);
-const body = 'A quick brown fox jumps over the dog';
-const issues = 'a issues is not a person that kicks things';
-const longIssues =
+var body = 'A quick brown fox jumps over the dog';
+var issues = 'a issues is not a person that kicks things';
+var longIssues =
   'bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb' +
   'bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb' +
   'bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb';
-const breakingChange = 'BREAKING CHANGE: ';
-const breaking = 'asdhdfkjhbakjdhjkashd adhfajkhs asdhkjdsh ahshd';
-const longIssuesSplit =
+var breakingChange = 'BREAKING CHANGE: ';
+var breaking = 'asdhdfkjhbakjdhjkashd adhfajkhs asdhkjdsh ahshd';
+var longIssuesSplit =
   longIssues.slice(0, defaultOptions.maxLineWidth) +
   '\n' +
   longIssues.slice(defaultOptions.maxLineWidth, longIssues.length);
 
 describe('commit message', () => {
-  test('only header w/ out scope', () => {
+  it('only header w/ out scope', () => {
     expect(
       commitMessage({
         type,
         subject
       })
-    ).toEqual(`${type}: ${subject}`);
+    ).to.equal(`${type}: ${subject}`);
   });
-  test('only header w/ scope', () => {
+  it('only header w/ scope', () => {
     expect(
       commitMessage({
         type,
         scope,
         subject
       })
-    ).toEqual(`${type}(${scope}): ${subject}`);
+    ).to.equal(`${type}(${scope}): ${subject}`);
   });
-  test('header and body w/ out scope', () => {
+  it('header and body w/ out scope', () => {
     expect(
       commitMessage({
         type,
         subject,
         body
       })
-    ).toEqual(`${type}: ${subject}\n\n${body}`);
+    ).to.equal(`${type}: ${subject}\n\n${body}`);
   });
-  test('header and body w/ scope', () => {
+  it('header and body w/ scope', () => {
     expect(
       commitMessage({
         type,
@@ -68,9 +70,9 @@ describe('commit message', () => {
         subject,
         body
       })
-    ).toEqual(`${type}(${scope}): ${subject}\n\n${body}`);
+    ).to.equal(`${type}(${scope}): ${subject}\n\n${body}`);
   });
-  test('header, body and issues w/ out scope', () => {
+  it('header, body and issues w/ out scope', () => {
     expect(
       commitMessage({
         type,
@@ -78,9 +80,9 @@ describe('commit message', () => {
         body,
         issues
       })
-    ).toEqual(`${type}: ${subject}\n\n${body}\n\n${issues}`);
+    ).to.equal(`${type}: ${subject}\n\n${body}\n\n${issues}`);
   });
-  test('header, body and issues w/ scope', () => {
+  it('header, body and issues w/ scope', () => {
     expect(
       commitMessage({
         type,
@@ -89,9 +91,9 @@ describe('commit message', () => {
         body,
         issues
       })
-    ).toEqual(`${type}(${scope}): ${subject}\n\n${body}\n\n${issues}`);
+    ).to.equal(`${type}(${scope}): ${subject}\n\n${body}\n\n${issues}`);
   });
-  test('header, body and long issues w/ out scope', () => {
+  it('header, body and long issues w/ out scope', () => {
     expect(
       commitMessage({
         type,
@@ -99,9 +101,9 @@ describe('commit message', () => {
         body,
         issues: longIssues
       })
-    ).toEqual(`${type}: ${subject}\n\n${body}\n\n${longIssuesSplit}`);
+    ).to.equal(`${type}: ${subject}\n\n${body}\n\n${longIssuesSplit}`);
   });
-  test('header, body and long issues w/ scope', () => {
+  it('header, body and long issues w/ scope', () => {
     expect(
       commitMessage({
         type,
@@ -110,18 +112,20 @@ describe('commit message', () => {
         body,
         issues: longIssues
       })
-    ).toEqual(`${type}(${scope}): ${subject}\n\n${body}\n\n${longIssuesSplit}`);
+    ).to.equal(
+      `${type}(${scope}): ${subject}\n\n${body}\n\n${longIssuesSplit}`
+    );
   });
-  test('header and long body w/ out scope', () => {
+  it('header and long body w/ out scope', () => {
     expect(
       commitMessage({
         type,
         subject,
         body: longBody
       })
-    ).toEqual(`${type}: ${subject}\n\n${longBodySplit}`);
+    ).to.equal(`${type}: ${subject}\n\n${longBodySplit}`);
   });
-  test('header and long body w/ scope', () => {
+  it('header and long body w/ scope', () => {
     expect(
       commitMessage({
         type,
@@ -129,9 +133,9 @@ describe('commit message', () => {
         subject,
         body: longBody
       })
-    ).toEqual(`${type}(${scope}): ${subject}\n\n${longBodySplit}`);
+    ).to.equal(`${type}(${scope}): ${subject}\n\n${longBodySplit}`);
   });
-  test('header, long body and issues w/ out scope', () => {
+  it('header, long body and issues w/ out scope', () => {
     expect(
       commitMessage({
         type,
@@ -139,9 +143,9 @@ describe('commit message', () => {
         body: longBody,
         issues
       })
-    ).toEqual(`${type}: ${subject}\n\n${longBodySplit}\n\n${issues}`);
+    ).to.equal(`${type}: ${subject}\n\n${longBodySplit}\n\n${issues}`);
   });
-  test('header, long body and issues w/ scope', () => {
+  it('header, long body and issues w/ scope', () => {
     expect(
       commitMessage({
         type,
@@ -150,9 +154,11 @@ describe('commit message', () => {
         body: longBody,
         issues
       })
-    ).toEqual(`${type}(${scope}): ${subject}\n\n${longBodySplit}\n\n${issues}`);
+    ).to.equal(
+      `${type}(${scope}): ${subject}\n\n${longBodySplit}\n\n${issues}`
+    );
   });
-  test('header, long body and long issues w/ out scope', () => {
+  it('header, long body and long issues w/ out scope', () => {
     expect(
       commitMessage({
         type,
@@ -160,9 +166,9 @@ describe('commit message', () => {
         body: longBody,
         issues: longIssues
       })
-    ).toEqual(`${type}: ${subject}\n\n${longBodySplit}\n\n${longIssuesSplit}`);
+    ).to.equal(`${type}: ${subject}\n\n${longBodySplit}\n\n${longIssuesSplit}`);
   });
-  test('header, long body and long issues w/ scope', () => {
+  it('header, long body and long issues w/ scope', () => {
     expect(
       commitMessage({
         type,
@@ -171,11 +177,11 @@ describe('commit message', () => {
         body: longBody,
         issues: longIssues
       })
-    ).toEqual(
+    ).to.equal(
       `${type}(${scope}): ${subject}\n\n${longBodySplit}\n\n${longIssuesSplit}`
     );
   });
-  test('header, long body, breaking change, and long issues w/ scope', () => {
+  it('header, long body, breaking change, and long issues w/ scope', () => {
     expect(
       commitMessage({
         type,
@@ -185,11 +191,11 @@ describe('commit message', () => {
         breaking,
         issues: longIssues
       })
-    ).toEqual(
+    ).to.equal(
       `${type}(${scope}): ${subject}\n\n${longBodySplit}\n\n${breakingChange}${breaking}\n\n${longIssuesSplit}`
     );
   });
-  test('header, long body, breaking change (with prefix entered), and long issues w/ scope', () => {
+  it('header, long body, breaking change (with prefix entered), and long issues w/ scope', () => {
     expect(
       commitMessage({
         type,
@@ -199,153 +205,152 @@ describe('commit message', () => {
         breaking: `${breakingChange}${breaking}`,
         issues: longIssues
       })
-    ).toEqual(
+    ).to.equal(
       `${type}(${scope}): ${subject}\n\n${longBodySplit}\n\n${breakingChange}${breaking}\n\n${longIssuesSplit}`
     );
   });
 });
 
 describe('validation', () => {
-  test('subject exceeds max length', () => {
+  it('subject exceeds max length', () => {
     expect(() =>
       commitMessage({
         type,
         scope,
         subject: longBody
       })
-    ).toThrow(
+    ).to.throw(
       'length must be less than or equal to ' +
         `${defaultOptions.maxLineWidth - type.length - scope.length - 4}`
     );
   });
-  test('empty subject', () => {
+  it('empty subject', () => {
     expect(() =>
       commitMessage({
         type,
         scope,
         subject: ''
       })
-    ).toThrow('subject is required');
+    ).to.throw('subject is required');
   });
 });
 
 describe('defaults', () => {
-  test('defaultType default', () => {
-    expect(questionDefault('type')).toBeFalsy();
+  it('defaultType default', () => {
+    expect(questionDefault('type')).to.be.undefined;
   });
-  test('defaultType options', () => {
+  it('defaultType options', () => {
     expect(
-      questionDefault('type', { ...defaultOptions, defaultType: type })
-    ).toEqual(type);
+      questionDefault('type', customOptions({ defaultType: type }))
+    ).to.equal(type);
   });
-  test('defaultScope default', () => {
-    expect(questionDefault('scope')).toBeFalsy();
+  it('defaultScope default', () => {
+    expect(questionDefault('scope')).to.be.undefined;
   });
-  test('defaultScope options', () => {
+  it('defaultScope options', () =>
     expect(
-      questionDefault('scope', {
-        ...defaultOptions,
-        defaultScope: scope
-      })
-    ).toEqual(scope);
-  });
-  test('defaultSubject default', () => {
-    expect(questionDefault('subject')).toBeFalsy();
-  });
-  test('defaultSubject options', () => {
+      questionDefault('scope', customOptions({ defaultScope: scope }))
+    ).to.equal(scope));
+
+  it('defaultSubject default', () =>
+    expect(questionDefault('subject')).to.be.undefined);
+  it('defaultSubject options', () => {
     expect(
-      questionDefault('subject', {
-        ...defaultOptions,
-        defaultSubject: subject
-      })
-    ).toEqual(subject);
+      questionDefault(
+        'subject',
+        customOptions({
+          defaultSubject: subject
+        })
+      )
+    ).to.equal(subject);
   });
-  test('defaultBody default', () => {
-    expect(questionDefault('body')).toBeFalsy();
+  it('defaultBody default', () => {
+    expect(questionDefault('body')).to.be.undefined;
   });
-  test('defaultBody options', () => {
+  it('defaultBody options', () => {
     expect(
-      questionDefault('body', { ...defaultOptions, defaultBody: body })
-    ).toEqual(body);
+      questionDefault('body', customOptions({ defaultBody: body }))
+    ).to.equal(body);
   });
-  test('defaultIssues default', () => {
-    expect(questionDefault('issues')).toBeFalsy();
+  it('defaultIssues default', () => {
+    expect(questionDefault('issues')).to.be.undefined;
   });
-  test('defaultIssues options', () => {
+  it('defaultIssues options', () => {
     expect(
-      questionDefault('issues', {
-        ...defaultOptions,
-        defaultIssues: issues
-      })
-    ).toEqual(issues);
+      questionDefault(
+        'issues',
+        customOptions({
+          defaultIssues: issues
+        })
+      )
+    ).to.equal(issues);
   });
 });
 
 describe('prompts', () => {
-  test('commit subject prompt for commit w/ out scope', () => {
-    expect(questionPrompt('subject', { type })).toEqual(
-      expect.stringContaining(
-        `(max ${defaultOptions.maxHeaderWidth - type.length - 2} chars)`
-      )
+  it('commit subject prompt for commit w/ out scope', () => {
+    expect(questionPrompt('subject', { type })).to.contain(
+      `(max ${defaultOptions.maxHeaderWidth - type.length - 2} chars)`
     );
   });
-  test('commit subject prompt for commit w/ scope', () => {
-    expect(questionPrompt('subject', { type, scope })).toEqual(
-      expect.stringContaining(
-        `(max ${defaultOptions.maxHeaderWidth -
-          type.length -
-          scope.length -
-          4} chars)`
-      )
+  it('commit subject prompt for commit w/ scope', () => {
+    expect(questionPrompt('subject', { type, scope })).to.contain(
+      `(max ${defaultOptions.maxHeaderWidth -
+        type.length -
+        scope.length -
+        4} chars)`
     );
   });
 });
 
 describe('transformation', () => {
-  test('subject w/ character count', () =>
+  it('subject w/ character count', () =>
     expect(
       questionTransformation('subject', {
         type,
         subject
       })
-    ).toEqual(chalk.green(`(${subject.length}) ${subject}`)));
-  test('long subject w/ character count', () =>
+    ).to.equal(chalk.green(`(${subject.length}) ${subject}`)));
+  it('long subject w/ character count', () =>
     expect(
       questionTransformation('subject', {
         type,
         subject: longBody
       })
-    ).toEqual(chalk.red(`(${longBody.length}) ${longBody}`)));
+    ).to.equal(chalk.red(`(${longBody.length}) ${longBody}`)));
 });
 
 describe('filter', () => {
-  test('lowercase scope', () =>
-    expect(questionFilter('scope', 'HelloMatt')).toEqual('hellomatt'));
-  test('lowerfirst subject trimmed and trailing dots striped', () =>
-    expect(questionFilter('subject', '  A subject...  ')).toEqual('a subject'));
+  it('lowercase scope', () =>
+    expect(questionFilter('scope', 'HelloMatt')).to.equal('hellomatt'));
+  it('lowerfirst subject trimmed and trailing dots striped', () =>
+    expect(questionFilter('subject', '  A subject...  ')).to.equal(
+      'a subject'
+    ));
 });
 
 describe('when', () => {
-  test('breaking by default', () =>
-    expect(questionWhen('breaking', {})).toBeFalsy());
-  test('breaking when isBreaking', () =>
+  it('breaking by default', () =>
+    expect(questionWhen('breaking', {})).to.be.undefined);
+  it('breaking when isBreaking', () =>
     expect(
       questionWhen('breaking', {
         isBreaking: true
       })
-    ).toBeTruthy());
-  test('issues by default', () =>
-    expect(questionWhen('issues', {})).toBeFalsy());
-  test('issues when isIssueAffected', () =>
+    ).to.be.true);
+  it('issues by default', () =>
+    expect(questionWhen('issues', {})).to.be.undefined);
+  it('issues when isIssueAffected', () =>
     expect(
       questionWhen('issues', {
         isIssueAffected: true
       })
-    ).toBeTruthy());
+    ).to.be.true);
 });
 
-function commitMessage(answers, options = defaultOptions) {
-  let result = null;
+function commitMessage(answers, options) {
+  options = options || defaultOptions;
+  var result = null;
   engine(options).prompter(
     {
       prompt: function(questions) {
@@ -365,10 +370,10 @@ function commitMessage(answers, options = defaultOptions) {
 }
 
 function processQuestions(questions, answers, options) {
-  for (let i in questions) {
-    const question = questions[i];
-    const answer = answers[question.name];
-    const validation =
+  for (var i in questions) {
+    var question = questions[i];
+    var answer = answers[question.name];
+    var validation =
       answer === undefined || !question.validate
         ? true
         : question.validate(answer, answers);
@@ -384,8 +389,9 @@ function processQuestions(questions, answers, options) {
   }
 }
 
-function getQuestions(options = defaultOptions) {
-  let result = null;
+function getQuestions(options) {
+  options = options || defaultOptions;
+  var result = null;
   engine(options).prompter({
     prompt: function(questions) {
       result = questions;
@@ -397,9 +403,10 @@ function getQuestions(options = defaultOptions) {
   return result;
 }
 
-function getQuestion(name, options = defaultOptions) {
-  const questions = getQuestions(options);
-  for (const i in questions) {
+function getQuestion(name, options) {
+  options = options || defaultOptions;
+  var questions = getQuestions(options);
+  for (var i in questions) {
     if (questions[i].name === name) {
       return questions[i];
     }
@@ -407,35 +414,49 @@ function getQuestion(name, options = defaultOptions) {
   return false;
 }
 
-function questionPrompt(name, answers, options = defaultOptions) {
-  const question = getQuestion(name, options);
+function questionPrompt(name, answers, options) {
+  options = options || defaultOptions;
+  var question = getQuestion(name, options);
   return question.message && typeof question.message === 'string'
     ? question.message
     : question.message(answers);
 }
 
-function questionTransformation(name, answers, options = defaultOptions) {
-  const question = getQuestion(name, options);
+function questionTransformation(name, answers, options) {
+  options = options || defaultOptions;
+  var question = getQuestion(name, options);
   return (
     question.transformer &&
     question.transformer(answers[name], answers, options)
   );
 }
 
-function questionFilter(name, answer, options = defaultOptions) {
-  const question = getQuestion(name, options);
+function questionFilter(name, answer, options) {
+  options = options || defaultOptions;
+  var question = getQuestion(name, options);
   return (
     question.filter &&
     question.filter(typeof answer === 'string' ? answer : answer[name])
   );
 }
 
-function questionDefault(name, options = defaultOptions) {
-  const question = getQuestion(name, options);
+function questionDefault(name, options) {
+  options = options || defaultOptions;
+  var question = getQuestion(name, options);
   return question.default;
 }
 
-function questionWhen(name, answers, options = defaultOptions) {
-  const question = getQuestion(name, options);
+function questionWhen(name, answers, options) {
+  options = options || defaultOptions;
+  var question = getQuestion(name, options);
   return question.when(answers);
+}
+
+function customOptions(options) {
+  Object.keys(defaultOptions).forEach(key => {
+    if (options[key] === undefined) {
+      options[key] = defaultOptions[key];
+    }
+  });
+  return options;
 }

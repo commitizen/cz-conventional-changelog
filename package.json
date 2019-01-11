@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "commit": "git-cz",
-    "test": "jest",
+    "test": "mocha *.test.js",
     "format": "prettier --write *.js",
     "semantic-release": "semantic-release"
   },
@@ -25,9 +25,11 @@
     "word-wrap": "^1.0.3"
   },
   "devDependencies": {
-    "@types/jest": "^23.3.12",
+    "@types/chai": "^4.1.7",
+    "@types/mocha": "^5.2.5",
+    "chai": "^4.2.0",
     "commitizen": "^2.10.1",
-    "jest": "^23.6.0",
+    "mocha": "^5.2.0",
     "prettier": "^1.15.3",
     "semantic-release": "^15.13.3"
   },
