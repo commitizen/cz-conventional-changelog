@@ -1,10 +1,10 @@
-"format cjs";
+'format cjs';
 
 var engine = require('./engine');
 var conventionalCommitTypes = require('conventional-commit-types');
-var configLoader = require('commitizen').configLoader
+var configLoader = require('commitizen').configLoader;
 
-var config = configLoader.load()
+var config = configLoader.load();
 
 module.exports = engine({
   types: conventionalCommitTypes.types,
@@ -14,5 +14,5 @@ module.exports = engine({
   defaultBody: process.env.CZ_BODY || config.defaultBody,
   defaultIssues: process.env.CZ_ISSUES || config.defaultIssues,
   maxHeaderWidth: process.env.CZ_MAX_LINE_WIDTH || config.maxHeaderWidth || 100,
-  maxLineWidth: process.env.CZ_MAX_BODY_WIDTH || config.maxLineWidth || 100,
+  maxLineWidth: process.env.CZ_MAX_BODY_WIDTH || config.maxLineWidth || 100
 });

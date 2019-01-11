@@ -6,6 +6,7 @@
   "scripts": {
     "commit": "git-cz",
     "test": "echo 'Tests need to be setup!'",
+    "format": "prettier --write *.js",
     "semantic-release": "semantic-release"
   },
   "homepage": "https://github.com/commitizen/cz-conventional-changelog",
@@ -24,7 +25,10 @@
     "word-wrap": "^1.0.3"
   },
   "devDependencies": {
+    "@types/jest": "^23.3.12",
     "commitizen": "^2.10.1",
+    "jest": "^23.6.0",
+    "prettier": "^1.15.3",
     "semantic-release": "^15.13.3"
   },
   "config": {
