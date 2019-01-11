@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "commit": "git-cz",
-    "test": "echo 'Tests need to be setup!'",
+    "test": "jest",
     "format": "prettier --write *.js",
     "semantic-release": "semantic-release"
   },
