@@ -168,7 +168,7 @@ module.exports = function(options) {
       ]).then(function(answers) {
         var wrapOptions = {
           trim: true,
-          cut: true,
+          cut: false,
           newline: '\n',
           indent: '',
           width: options.maxLineWidth

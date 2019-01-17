@@ -15,25 +15,33 @@ var scope = 'everything';
 var subject = 'testing123';
 var subject2 = 'after the fall, I was gone';
 var longBody =
-  'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa' +
-  'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa' +
-  'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa';
+  'a a aa a aa a aa a aa a aa a aa a aa a aa a aa a aa a aa a aa a aa a aa a' +
+  'a a aa a aa a aa a aa a aa a aa a aa a aa a aa a aa a aa a aa a aa a aa a aa a aa a aa a aa a' +
+  'a a aa a aa a aa a aa a aa a aa a aa a aa a aa a aa a aa a aa a aa a aa a aa a aa a aa a aa a';
 var longBodySplit =
-  longBody.slice(0, defaultOptions.maxLineWidth) +
+  longBody.slice(0, defaultOptions.maxLineWidth).trim() +
   '\n' +
-  longBody.slice(defaultOptions.maxLineWidth, longBody.length);
+  longBody
+    .slice(defaultOptions.maxLineWidth, 2 * defaultOptions.maxLineWidth)
+    .trim() +
+  '\n' +
+  longBody.slice(defaultOptions.maxLineWidth * 2, longBody.length).trim();
 var body = 'A quick brown fox jumps over the dog';
 var issues = 'a issues is not a person that kicks things';
 var longIssues =
-  'bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb' +
-  'bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb' +
-  'bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb';
+  'b b bb b bb b bb b bb b bb b bb b bb b bb b bb b bb b bb b bb b bb b bb b' +
+  'b b bb b bb b bb b bb b bb b bb b bb b bb b bb b bb b bb b bb b bb b bb b bb b bb b bb b bb b' +
+  'b b bb b bb b bb b bb b bb b bb b bb b bb b bb b bb b bb b bb b bb b bb b bb b bb b bb b bb b';
 var breakingChange = 'BREAKING CHANGE: ';
 var breaking = 'asdhdfkjhbakjdhjkashd adhfajkhs asdhkjdsh ahshd';
 var longIssuesSplit =
-  longIssues.slice(0, defaultOptions.maxLineWidth) +
+  longIssues.slice(0, defaultOptions.maxLineWidth).trim() +
   '\n' +
-  longIssues.slice(defaultOptions.maxLineWidth, longIssues.length);
+  longIssues
+    .slice(defaultOptions.maxLineWidth, defaultOptions.maxLineWidth * 2)
+    .trim() +
+  '\n' +
+  longIssues.slice(defaultOptions.maxLineWidth * 2, longIssues.length).trim();
 
 describe('commit message', () => {
   it('only header w/ out scope', () => {
