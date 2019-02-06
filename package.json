@@ -29,9 +29,14 @@
     "@types/mocha": "^5.2.5",
     "chai": "^4.2.0",
     "commitizen": "^2.10.1",
+    "cosmiconfig": "^4.0.0",
     "mocha": "^5.2.0",
+    "mock-require": "^3.0.3",
     "prettier": "^1.15.3",
     "semantic-release": "^15.13.3"
+  },
+  "optionalDependencies": {
+    "@commitlint/load": ">6.1.1"
   },
   "config": {
     "commitizen": {

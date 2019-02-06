@@ -61,14 +61,6 @@ module.exports = function(options) {
     // By default, we'll de-indent your commit
     // template and will keep empty lines.
     prompter: function(cz, commit) {
-      console.log(
-        '\nLine 1 will have the maximum length of ' +
-          options.maxHeaderWidth +
-          ' characters (enforced). All other lines will be wrapped after ' +
-          options.maxLineWidth +
-          ' characters.\n'
-      );
-
       // Let's ask some questions of the user
       // so that we can populate our commit
       // template.
@@ -144,17 +136,46 @@ module.exports = function(options) {
         },
         {
           type: 'input',
+          name: 'breakingBody',
+          default: '-',
+          message:
+            'A BREAKING CHANGE commit requires a body. Please enter a longer description of the commit itself:\n',
+          when: function(answers) {
+            return answers.isBreaking && !answers.body;
+          },
+          validate: function(breakingBody, answers) {
+            return (
+              breakingBody.trim().length > 0 ||
+              'Body is required for BREAKING CHANGE'
+            );
+          }
+        },
+        {
+          type: 'input',
           name: 'breaking',
           message: 'Describe the breaking changes:\n',
           when: function(answers) {
             return answers.isBreaking;
           }
         },
+
         {
           type: 'confirm',
           name: 'isIssueAffected',
           message: 'Does this change affect any open issues?',
           default: options.defaultIssues ? true : false
+        },
+        {
+          type: 'input',
+          name: 'issuesBody',
+          default: '-',
+          message:
+            'If issues are closed, the commit requires a body. Please enter a longer description of the commit itself:\n',
+          when: function(answers) {
+            return (
+              answers.isIssueAffected && !answers.body && !answers.breakingBody
+            );
+          }
         },
         {
           type: 'input',
