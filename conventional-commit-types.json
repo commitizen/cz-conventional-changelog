@@ -1,0 +1,48 @@
+{
+  "types": {
+    "功能": {
+      "description": "一个新的功能提交",
+      "title": "功能"
+    },
+    "修复": {
+      "description": "一次错误修复提交",
+      "title": "修复"
+    },
+    "文档": {
+      "description": "只是文档/注释修改提交",
+      "title": "文档"
+    },
+    "格式": {
+      "description": "不影响代码含义的更改提交 (空格, 格式化, 缺少的分号, 等等)",
+      "title": "格式"
+    },
+    "重构": {
+      "description": "既不修复错误也不添加功能的代码更改提交",
+      "title": "重构"
+    },
+    "优化": {
+      "description": "可以提高性能代码更改提交",
+      "title": "优化"
+    },
+    "测试": {
+      "description": "添加缺失测试或更正现有测试提交",
+      "title": "测试"
+    },
+    "构建": {
+      "description": "影响构建系统或外部依赖项的更改提交 (例如: webpack, test, npm, 等等)",
+      "title": "构建"
+    },
+    "流水线": {
+      "description": "CI配置文件和脚本的更改提交 (例如: 神兵, git hooks, Travis, Circle, BrowserStack, SauceLabs, 等等)",
+      "title": "流水线"
+    },
+    "杂项": {
+      "description": "其他不修改src或测试文件的更改提交",
+      "title": "杂项"
+    },
+    "恢复": {
+      "description": "恢复以前的代码提交",
+      "title": "恢复"
+    }
+  }
+}
