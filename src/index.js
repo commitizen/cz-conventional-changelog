@@ -20,7 +20,8 @@ function getAllPackages() {
 function getChangedPackages(allPackages) {
   const changedFiles = shell.exec('git diff --cached --name-only', { silent: true })
     .stdout
-    .split('\n');
+    .split('\n')
+    .map(file => path.normalize(file));
 
   return allPackages
     .filter(function (pkg) {
