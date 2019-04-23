@@ -62,8 +62,8 @@ module.exports = function (options) {
           default: options.defaultSubject
         }, {
           type: 'input',
-          name: 'body',
-          message: 'Provide a longer human description of the change for tomorrow\'s standup meeting: (press enter to skip)\n',
+          name: 'story',
+          message: 'Provide a story that non-technical stakeholders can understand, e.g. As TPO I it is important for me to have a mechanism to <x> therefore <y> was developed\n',
           default: options.defaultBody
         }, {
           type: 'confirm',
@@ -116,8 +116,8 @@ module.exports = function (options) {
         var issues = answers.issues ? wrap(answers.issues, wrapOptions) : '';
 
         var footer = filter([ breaking, issues ]).join('\n\n');
-
-        commit(head + '\n\n to_human: ' + body + '\n\n' + footer);
+        var story = answers.story ? 'story: '+answers.story : '';
+        commit(head + '\n\n ' + story + '\n\n' + footer);
       });
     }
   };
