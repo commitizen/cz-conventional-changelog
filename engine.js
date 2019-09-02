@@ -83,7 +83,9 @@ module.exports = function(options) {
             'What is the scope of this change (e.g. component or file name): (press enter to skip)',
           default: options.defaultScope,
           filter: function(value) {
-            return value.trim().toLowerCase();
+            return options.disableScopeLowerCase
+              ? value.trim()
+              : value.trim().toLowerCase();
           }
         },
         {

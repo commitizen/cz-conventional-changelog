@@ -18,7 +18,6 @@ var defaultOptions = {
 var type = 'func';
 var scope = 'everything';
 var subject = 'testing123';
-var subject2 = 'after the fall, I was gone';
 var longBody =
   'a a aa a aa a aa a aa a aa a aa a aa a aa a aa a aa a aa a aa a aa a aa a' +
   'a a aa a aa a aa a aa a aa a aa a aa a aa a aa a aa a aa a aa a aa a aa a aa a aa a aa a aa a' +
@@ -84,6 +83,23 @@ describe('commit message', function() {
         body
       })
     ).to.equal(`${type}(${scope}): ${subject}\n\n${body}`);
+  });
+  it('header and body w/ uppercase scope', function() {
+    var upperCaseScope = scope.toLocaleUpperCase();
+    expect(
+      commitMessage(
+        {
+          type,
+          scope: upperCaseScope,
+          subject,
+          body
+        },
+        {
+          ...defaultOptions,
+          disableScopeLowerCase: true
+        }
+      )
+    ).to.equal(`${type}(${upperCaseScope}): ${subject}\n\n${body}`);
   });
   it('header, body and issues w/ out scope', function() {
     expect(
@@ -297,6 +313,9 @@ describe('defaults', function() {
         })
       )
     ).to.equal(issues);
+  });
+  it('disableScopeLowerCase default', function() {
+    expect(questionDefault('disableScopeLowerCase')).to.be.undefined;
   });
 });
 
