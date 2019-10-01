@@ -5,7 +5,6 @@
   "main": "index.js",
   "scripts": {
     "commit": "git-cz",
-    "test": "mocha *.test.js",
     "format": "prettier --write *.js",
     "semantic-release": "semantic-release"
   },
