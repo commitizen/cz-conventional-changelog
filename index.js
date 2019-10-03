@@ -4,7 +4,7 @@ var engine = require('./engine');
 var conventionalCommitTypes = require('conventional-commit-types');
 var configLoader = require('commitizen').configLoader;
 
-var config = configLoader.load();
+var config = configLoader.load() || {};
 var options = {
   types: conventionalCommitTypes.types,
   defaultType: process.env.CZ_TYPE || config.defaultType,
