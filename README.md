@@ -26,12 +26,11 @@ Like commitizen, you specify the configuration of cz-conventional-changelog thro
             "defaultSubject": "",
             "defaultBody": "",
             "defaultIssues": "",
-            "emojis": false,
             "types": {
               ...
               "feat": {
                 "description": "A new feature",
-                "emoji": "🚀"
+                "title": "Features"
               },
               ...
             }
