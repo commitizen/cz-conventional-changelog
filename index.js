@@ -6,6 +6,7 @@ var configLoader = require('commitizen').configLoader;
 
 var config = configLoader.load();
 var options = {
+  emojis: config.emojis || false,
   types: config.types || conventionalCommitTypes.types,
   defaultType: process.env.CZ_TYPE || config.defaultType,
   defaultScope: process.env.CZ_SCOPE || config.defaultScope,

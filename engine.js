@@ -197,9 +197,10 @@ module.exports = function(options) {
 
         // parentheses are only needed when a scope is present
         var scope = answers.scope ? '(' + answers.scope + ')' : '';
+        var emoji = options.emojis ? options.types[answers.type].emoji : '';
 
         // Hard limit this line in the validate
-        var head = answers.type + scope + ': ' + answers.subject;
+        var head = answers.type + scope + ': '+ emoji + ' ' + answers.subject;
 
         // Wrap these lines at options.maxLineWidth characters
         var body = answers.body ? wrap(answers.body, wrapOptions) : false;
