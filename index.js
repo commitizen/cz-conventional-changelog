@@ -12,6 +12,8 @@ var options = {
   defaultSubject: process.env.CZ_SUBJECT || config.defaultSubject,
   defaultBody: process.env.CZ_BODY || config.defaultBody,
   defaultIssues: process.env.CZ_ISSUES || config.defaultIssues,
+  disableScopeLowerCase:
+    process.env.DISABLE_SCOPE_LOWERCASE || config.disableScopeLowerCase,
   maxHeaderWidth:
     (process.env.CZ_MAX_HEADER_WIDTH &&
       parseInt(process.env.CZ_MAX_HEADER_WIDTH)) ||
