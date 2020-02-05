@@ -1,19 +1,19 @@
 language: node_js
-
 node_js:
-  - 12
-  - 10
-
+- 12
+- 10
 jobs:
   include:
-    - stage: release
-      node_js: lts/*
-      deploy:
-        provider: script
-        skip_cleanup: true
-        script:
-          - npm run semantic-release
-
+  - stage: release
+    node_js: lts/*
+    deploy:
+      provider: script
+      skip_cleanup: true
+      script:
+      - npm run semantic-release
 branches:
   only:
-    - master
+  - master
+env:
+  global:
+    secure: jV4MQsl6vTlrT1UeJq1+edEhlemi2eyZETX839r8SeTeXdHToIALhhJq3d8Y+sfKmUWL+Zx11uU4JfO5gZjxR/JilTB2gkiSUkQ6emL2UevV+MnEKBdC0QDGZcQT79M8uO3cwzFZYROcMIHz/TmBKYQutCnfE7SziaUD43q3/DhN7w1DM2T4wop/O/ofnjOaV2YzggX8ReWdaI/zSjAEKU/F+NJA9uyUtigrMtK/dRxckr50w7uYWLM/a4xJwUtLtBE9/a/iKYhjulsPTpxKAgZG/WNf9Ojql9qYlsNKv9Oa878stdo4u4w8p6WfaspYKgBS+yD6aAVviUdDoGIvadCvLKh7sBrRkQI7HDsGZxuXAOGYEp3znwUgBEGua/g7oU4vDGg2LcRB4yd9rl7vxepG1f6/5hQr6kVxkFAh5So7E2313H92Gn0CC5kVKVFTsMeZq/nbje/4ym7cwZObd7eShmqTgLalEDYh68bDhN+yBn0cOO66P1Z4jtqm/qiM49IcpghjbJps4iXS2Phn68tMYgHURRHbL5sCdZRKNi07OEoYAxEsePcJJJfmYqwU1RFmolTyTzZHNa3q51QBs8/phjRJjWv48U8T7RCbgiRApTwQPtNHZVl9fMAw0Uf9/6w1Z+7XW+FL1PYAzxAt4tPYFpG50dCRWWr3MuPHXwM=
