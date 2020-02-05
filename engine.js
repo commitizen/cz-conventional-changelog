@@ -14,7 +14,7 @@ var filter = function(array) {
 
 var headerLength = function(answers) {
   return (
-    answers.type.length + 2 + (answers.scope ? answers.scope.length + 2 : 0)
+    answers.type.length + 2 + (answers.scope ? answers.scope.length + 2 + answers.jira.length + 1: 0)
   );
 };
 
@@ -75,6 +75,19 @@ module.exports = function(options) {
           message: "Select the type of change that you're committing:",
           choices: choices,
           default: options.defaultType
+        },
+        {
+          type: 'input',
+          name: 'jira',
+          message:
+            'Enter JIRA issue (DAZ-12345):',
+          default: '',
+          validate: function(jira) {
+            return /^[A-Z]+-[0-9]+$/.test(jira);
+          },
+          transformer: function(jira) {
+            return jira.toUpperCase();
+          }
         },
         {
           type: 'input',
@@ -201,7 +214,7 @@ module.exports = function(options) {
         var scope = answers.scope ? '(' + answers.scope + ')' : '';
 
         // Hard limit this line in the validate
-        var head = answers.type + scope + ': ' + answers.subject;
+        var head = answers.type + scope + ': ' + answers.jira + ' ' + answers.subject;
 
         // Wrap these lines at options.maxLineWidth characters
         var body = answers.body ? wrap(answers.body, wrapOptions) : false;
