@@ -47,5 +47,8 @@
     "commitizen": {
       "path": "./index.js"
     }
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }
