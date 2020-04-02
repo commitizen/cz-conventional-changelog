@@ -605,7 +605,7 @@ function getQuestions(options) {
           secondRun({});
 
           return {
-            then: function(secondRun) {}
+            then: function() {}
           };
         }
       };
