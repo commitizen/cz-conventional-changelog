@@ -81,14 +81,21 @@ module.exports = function(options) {
           var scopes = options.allowedScopes;
 
           var scopeChoices = scopes && scopes.length ?
-            map(scopes, function(scope) {
+            [{
+              name: 'Empty',
+              value: undefined
+            }].concat(map(scopes, function(scope) {
               return {
                 name: scope,
                 value: scope
               };
-            })
+            }))
             : null;
           var filterScope = function(value) {
+            if (!value) {
+              return value;
+            }
+
             return options.disableScopeLowerCase
               ? value.trim()
               : value.trim().toLowerCase();
@@ -100,7 +107,7 @@ module.exports = function(options) {
             message: "Select the scope of change that you're committing:",
             choices: scopeChoices,
             default: options.defaultScope,
-            // filter: filterScope
+            filter: filterScope
           } : {
             type: 'input',
             name: 'scope',
