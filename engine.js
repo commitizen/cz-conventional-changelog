@@ -77,7 +77,7 @@ module.exports = function(options) {
           default: options.defaultType
         }
       ])
-        .then(function(answers) {
+        .then(function(firstAnswers) {
           var scopes = options.allowedScopes;
 
           var scopeChoices = scopes && scopes.length ?
@@ -115,6 +115,10 @@ module.exports = function(options) {
             {
               type: 'input',
               name: 'subject',
+              when: function(answers) {
+                Object.assign(answers, firstAnswers);
+                return true;
+              },
               message: function(answers) {
                 return (
                   'Write a short, imperative tense description of the change (max ' +
@@ -213,7 +217,7 @@ module.exports = function(options) {
               default: options.defaultIssues ? options.defaultIssues : undefined
             }
           ]).then(function(restOfAnswers) {
-            return Object.assign(answers, restOfAnswers);
+            return Object.assign(firstAnswers, restOfAnswers);
           });
         }).then(function(answers) {
         var wrapOptions = {
