@@ -39,14 +39,45 @@ var filterSubject = function(subject) {
 // fine.
 module.exports = function(options) {
   var types = options.types;
+  var scopes = options.allowedScopes;
 
   var length = longest(Object.keys(types)).length + 1;
-  var choices = map(types, function(type, key) {
+  var typeChoices = map(types, function(type, key) {
     return {
       name: rightPad(key + ':', length) + ' ' + type.description,
       value: key
     };
   });
+
+  var scopeChoices = scopes && scopes.length ?
+    map(scopes, function(scope) {
+      return {
+        name: scope,
+        value: scope
+      };
+    })
+    : null;
+  var filterScope = function(value) {
+    return options.disableScopeLowerCase
+      ? value.trim()
+      : value.trim().toLowerCase();
+  }
+
+  var scopePrompt = scopeChoices ? {
+    type: 'list',
+    name: 'type',
+    message: "Select the scope of change that you're committing:",
+    choices: scopeChoices,
+    default: options.defaultScope,
+    filter: filterScope
+  } : {
+    type: 'input',
+    name: 'scope',
+    message:
+      'What is the scope of this change (e.g. component or file name): (press enter to skip)',
+    default: options.defaultScope,
+    filter: filterScope
+  };
 
   return {
     // When a user runs `git cz`, prompter will
@@ -73,21 +104,10 @@ module.exports = function(options) {
           type: 'list',
           name: 'type',
           message: "Select the type of change that you're committing:",
-          choices: choices,
+          choices: typeChoices,
           default: options.defaultType
         },
-        {
-          type: 'input',
-          name: 'scope',
-          message:
-            'What is the scope of this change (e.g. component or file name): (press enter to skip)',
-          default: options.defaultScope,
-          filter: function(value) {
-            return options.disableScopeLowerCase
-              ? value.trim()
-              : value.trim().toLowerCase();
-          }
-        },
+        scopePrompt,
         {
           type: 'input',
           name: 'subject',
