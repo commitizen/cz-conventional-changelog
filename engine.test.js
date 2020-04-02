@@ -552,6 +552,13 @@ function commitMessage(answers, options) {
           then: function(finalizer) {
             processQuestions(questions, answers, options);
             finalizer(answers);
+
+            return {
+              then: function(finalizer) {
+                processQuestions(questions, answers, options);
+                finalizer(answers);
+              }
+            };
           }
         };
       }
@@ -588,9 +595,19 @@ function getQuestions(options) {
   var result = null;
   engine(options).prompter({
     prompt: function(questions) {
-      result = questions;
+      if (result) {
+        result = result.concat(questions);
+      } else {
+        result = questions;
+      }
       return {
-        then: function() {}
+        then: function(secondRun) {
+          secondRun({});
+
+          return {
+            then: function(secondRun) {}
+          };
+        }
       };
     }
   });

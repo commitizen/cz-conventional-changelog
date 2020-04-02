@@ -39,7 +39,6 @@ var filterSubject = function(subject) {
 // fine.
 module.exports = function(options) {
   var types = options.types;
-  var scopes = options.allowedScopes;
 
   var length = longest(Object.keys(types)).length + 1;
   var typeChoices = map(types, function(type, key) {
@@ -48,36 +47,6 @@ module.exports = function(options) {
       value: key
     };
   });
-
-  var scopeChoices = scopes && scopes.length ?
-    map(scopes, function(scope) {
-      return {
-        name: scope,
-        value: scope
-      };
-    })
-    : null;
-  var filterScope = function(value) {
-    return options.disableScopeLowerCase
-      ? value.trim()
-      : value.trim().toLowerCase();
-  }
-
-  var scopePrompt = scopeChoices ? {
-    type: 'list',
-    name: 'type',
-    message: "Select the scope of change that you're committing:",
-    choices: scopeChoices,
-    default: options.defaultScope,
-    filter: filterScope
-  } : {
-    type: 'input',
-    name: 'scope',
-    message:
-      'What is the scope of this change (e.g. component or file name): (press enter to skip)',
-    default: options.defaultScope,
-    filter: filterScope
-  };
 
   return {
     // When a user runs `git cz`, prompter will
@@ -106,109 +75,147 @@ module.exports = function(options) {
           message: "Select the type of change that you're committing:",
           choices: typeChoices,
           default: options.defaultType
-        },
-        scopePrompt,
-        {
-          type: 'input',
-          name: 'subject',
-          message: function(answers) {
-            return (
-              'Write a short, imperative tense description of the change (max ' +
-              maxSummaryLength(options, answers) +
-              ' chars):\n'
-            );
-          },
-          default: options.defaultSubject,
-          validate: function(subject, answers) {
-            var filteredSubject = filterSubject(subject);
-            return filteredSubject.length == 0
-              ? 'subject is required'
-              : filteredSubject.length <= maxSummaryLength(options, answers)
-              ? true
-              : 'Subject length must be less than or equal to ' +
-                maxSummaryLength(options, answers) +
-                ' characters. Current length is ' +
-                filteredSubject.length +
-                ' characters.';
-          },
-          transformer: function(subject, answers) {
-            var filteredSubject = filterSubject(subject);
-            var color =
-              filteredSubject.length <= maxSummaryLength(options, answers)
-                ? chalk.green
-                : chalk.red;
-            return color('(' + filteredSubject.length + ') ' + subject);
-          },
-          filter: function(subject) {
-            return filterSubject(subject);
-          }
-        },
-        {
-          type: 'input',
-          name: 'body',
-          message:
-            'Provide a longer description of the change: (press enter to skip)\n',
-          default: options.defaultBody
-        },
-        {
-          type: 'confirm',
-          name: 'isBreaking',
-          message: 'Are there any breaking changes?',
-          default: false
-        },
-        {
-          type: 'input',
-          name: 'breakingBody',
-          default: '-',
-          message:
-            'A BREAKING CHANGE commit requires a body. Please enter a longer description of the commit itself:\n',
-          when: function(answers) {
-            return answers.isBreaking && !answers.body;
-          },
-          validate: function(breakingBody, answers) {
-            return (
-              breakingBody.trim().length > 0 ||
-              'Body is required for BREAKING CHANGE'
-            );
-          }
-        },
-        {
-          type: 'input',
-          name: 'breaking',
-          message: 'Describe the breaking changes:\n',
-          when: function(answers) {
-            return answers.isBreaking;
-          }
-        },
-
-        {
-          type: 'confirm',
-          name: 'isIssueAffected',
-          message: 'Does this change affect any open issues?',
-          default: options.defaultIssues ? true : false
-        },
-        {
-          type: 'input',
-          name: 'issuesBody',
-          default: '-',
-          message:
-            'If issues are closed, the commit requires a body. Please enter a longer description of the commit itself:\n',
-          when: function(answers) {
-            return (
-              answers.isIssueAffected && !answers.body && !answers.breakingBody
-            );
-          }
-        },
-        {
-          type: 'input',
-          name: 'issues',
-          message: 'Add issue references (e.g. "fix #123", "re #123".):\n',
-          when: function(answers) {
-            return answers.isIssueAffected;
-          },
-          default: options.defaultIssues ? options.defaultIssues : undefined
         }
-      ]).then(function(answers) {
+      ])
+        .then(function(answers) {
+          var scopes = options.allowedScopes;
+
+          var scopeChoices = scopes && scopes.length ?
+            map(scopes, function(scope) {
+              return {
+                name: scope,
+                value: scope
+              };
+            })
+            : null;
+          var filterScope = function(value) {
+            return options.disableScopeLowerCase
+              ? value.trim()
+              : value.trim().toLowerCase();
+          }
+
+          var scopePrompt = scopeChoices ? {
+            type: 'list',
+            name: 'type',
+            message: "Select the scope of change that you're committing:",
+            choices: scopeChoices,
+            default: options.defaultScope,
+            // filter: filterScope
+          } : {
+            type: 'input',
+            name: 'scope',
+            message:
+              'What is the scope of this change (e.g. component or file name): (press enter to skip)',
+            default: options.defaultScope,
+            filter: filterScope
+          };
+
+          return cz.prompt([
+            scopePrompt,
+            {
+              type: 'input',
+              name: 'subject',
+              message: function(answers) {
+                return (
+                  'Write a short, imperative tense description of the change (max ' +
+                  maxSummaryLength(options, answers) +
+                  ' chars):\n'
+                );
+              },
+              default: options.defaultSubject,
+              validate: function(subject, answers) {
+                var filteredSubject = filterSubject(subject);
+                return filteredSubject.length == 0
+                  ? 'subject is required'
+                  : filteredSubject.length <= maxSummaryLength(options, answers)
+                    ? true
+                    : 'Subject length must be less than or equal to ' +
+                    maxSummaryLength(options, answers) +
+                    ' characters. Current length is ' +
+                    filteredSubject.length +
+                    ' characters.';
+              },
+              transformer: function(subject, answers) {
+                var filteredSubject = filterSubject(subject);
+                var color =
+                  filteredSubject.length <= maxSummaryLength(options, answers)
+                    ? chalk.green
+                    : chalk.red;
+                return color('(' + filteredSubject.length + ') ' + subject);
+              },
+              filter: function(subject) {
+                return filterSubject(subject);
+              }
+            },
+            {
+              type: 'input',
+              name: 'body',
+              message:
+                'Provide a longer description of the change: (press enter to skip)\n',
+              default: options.defaultBody
+            },
+            {
+              type: 'confirm',
+              name: 'isBreaking',
+              message: 'Are there any breaking changes?',
+              default: false
+            },
+            {
+              type: 'input',
+              name: 'breakingBody',
+              default: '-',
+              message:
+                'A BREAKING CHANGE commit requires a body. Please enter a longer description of the commit itself:\n',
+              when: function(answers) {
+                return answers.isBreaking && !answers.body;
+              },
+              validate: function(breakingBody, answers) {
+                return (
+                  breakingBody.trim().length > 0 ||
+                  'Body is required for BREAKING CHANGE'
+                );
+              }
+            },
+            {
+              type: 'input',
+              name: 'breaking',
+              message: 'Describe the breaking changes:\n',
+              when: function(answers) {
+                return answers.isBreaking;
+              }
+            },
+
+            {
+              type: 'confirm',
+              name: 'isIssueAffected',
+              message: 'Does this change affect any open issues?',
+              default: options.defaultIssues ? true : false
+            },
+            {
+              type: 'input',
+              name: 'issuesBody',
+              default: '-',
+              message:
+                'If issues are closed, the commit requires a body. Please enter a longer description of the commit itself:\n',
+              when: function(answers) {
+                return (
+                  answers.isIssueAffected && !answers.body && !answers.breakingBody
+                );
+              }
+            },
+            {
+              type: 'input',
+              name: 'issues',
+              message: 'Add issue references (e.g. "fix #123", "re #123".):\n',
+              when: function(answers) {
+                return answers.isIssueAffected;
+              },
+              default: options.defaultIssues ? options.defaultIssues : undefined
+            }
+          ]).then(function(restOfAnswers) {
+            return Object.assign(answers, restOfAnswers);
+          });
+        }).then(function(answers) {
         var wrapOptions = {
           trim: true,
           cut: false,
