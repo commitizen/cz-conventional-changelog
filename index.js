@@ -55,8 +55,6 @@ var options = {
         ) {
           options.allowedScopes = scopeEnumRule[2];
         }
-
-        module.exports = engine(options)
       }
     });
   } catch (err) {}
