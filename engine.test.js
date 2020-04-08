@@ -101,6 +101,23 @@ describe('commit message', function() {
       )
     ).to.equal(`${type}(${upperCaseScope}): ${subject}\n\n${body}`);
   });
+  it('header and body w/ uppercase subject', function() {
+    var upperCaseSubject = subject.toLocaleUpperCase();
+    expect(
+      commitMessage(
+        {
+          type,
+          scope,
+          subject: upperCaseSubject,
+          body
+        },
+        {
+          ...defaultOptions,
+          disableSubjectLowerCase: true
+        }
+      )
+    ).to.equal(`${type}(${scope}): ${upperCaseSubject}\n\n${body}`);
+  });
   it('header, body and issues w/ out scope', function() {
     expect(
       commitMessage({
@@ -316,6 +333,9 @@ describe('defaults', function() {
   });
   it('disableScopeLowerCase default', function() {
     expect(questionDefault('disableScopeLowerCase')).to.be.undefined;
+  });
+  it('disableSubjectLowerCase default', function() {
+    expect(questionDefault('disableSubjectLowerCase')).to.be.undefined;
   });
 });
 
@@ -595,11 +615,7 @@ function getQuestions(options) {
   var result = null;
   engine(options).prompter({
     prompt: function(questions) {
-      if (result) {
-        result = result.concat(questions);
-      } else {
-        result = questions;
-      }
+      result = result ? result.concat(questions) : questions;
       return {
         then: function(secondRun) {
           secondRun({});

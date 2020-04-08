@@ -1,6 +1,6 @@
 {
   "name": "cz-conventional-changelog",
-  "version": "0.0.0-semantically-released.0",
+  "version": "0.0.1",
   "description": "Commitizen adapter following the conventional-changelog format.",
   "main": "index.js",
   "scripts": {
@@ -21,24 +21,23 @@
   "author": "Jim Cummins <jimthedev@gmail.com>",
   "license": "MIT",
   "dependencies": {
-    "chalk": "^2.4.1",
+    "chalk": "^3.0.0",
     "commitizen": "^4.0.3",
     "conventional-commit-types": "^3.0.0",
     "lodash.map": "^4.5.1",
     "longest": "^2.0.1",
-    "right-pad": "^1.0.1",
     "word-wrap": "^1.0.3"
   },
   "devDependencies": {
-    "@types/chai": "^4.1.7",
-    "@types/mocha": "^5.2.7",
-    "chai": "^4.2.0",
-    "cosmiconfig": "^5.2.1",
-    "mocha": "^6.2.0",
-    "mock-require": "^3.0.3",
-    "prettier": "^1.15.3",
-    "semantic-release": "^15.13.3",
-    "semver": "^6.2.0"
+    "@types/chai": "4.3.3",
+    "@types/mocha": "9.1.1",
+    "chai": "4.3.6",
+    "cosmiconfig": "5.2.1",
+    "mocha": "9.2.2",
+    "mock-require": "3.0.3",
+    "prettier": "1.19.1",
+    "semantic-release": "19.0.5",
+    "semver": "6.3.0"
   },
   "optionalDependencies": {
     "@commitlint/load": ">6.1.1"
