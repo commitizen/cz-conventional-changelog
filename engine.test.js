@@ -536,7 +536,7 @@ describe('commitlint config scope-enum', function() {
     //Node 4 doesn't support commitlint so the config value should remain the same
     it('default value for Node 4', function() {
       return mockOptions(['other', 'scopes']).then(function(options) {
-        expect(options).to.have.deep.property('maxHeaderWidth', []);
+        expect(options).to.have.deep.property('allowedScopes', []);
       });
     });
   }
