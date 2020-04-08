@@ -595,11 +595,7 @@ function getQuestions(options) {
   var result = null;
   engine(options).prompter({
     prompt: function(questions) {
-      if (result) {
-        result = result.concat(questions);
-      } else {
-        result = questions;
-      }
+      result = result ? result.concat(questions) : questions;
       return {
         then: function(secondRun) {
           secondRun({});
