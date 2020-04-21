@@ -3,7 +3,6 @@
 var wrap = require('word-wrap');
 var map = require('lodash.map');
 var longest = require('longest');
-var rightPad = require('right-pad');
 var chalk = require('chalk');
 
 var filter = function(array) {
@@ -43,7 +42,7 @@ module.exports = function(options) {
   var length = longest(Object.keys(types)).length + 1;
   var choices = map(types, function(type, key) {
     return {
-      name: rightPad(key + ':', length) + ' ' + type.description,
+      name: (key + ':').padEnd(length) + ' ' + type.description,
       value: key
     };
   });
