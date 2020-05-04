@@ -17,25 +17,33 @@ Like commitizen, you specify the configuration of cz-conventional-changelog thro
 {
 // ...  default values
     "config": {
-        "commitizen": {      
+        "commitizen": {
             "path": "./node_modules/cz-conventional-changelog",
             "maxHeaderWidth": 100,
             "maxLineWidth": 100,
             "defaultType": "",
-            "defaultScope": "",        
+            "defaultScope": "",
             "defaultSubject": "",
             "defaultBody": "",
-            "defaultIssues": ""
+            "defaultIssues": "",
+            "types": {
+              ...
+              "feat": {
+                "description": "A new feature",
+                "title": "Features"
+              },
+              ...
+            }
         }
     }
-// ...    
+// ...
 }
-``` 
+```
 ### Environment variables
 
 The following environment varibles can be used to override any default configuration or package.json based configuration.
 
-* CZ_TYPE = defaultType 
+* CZ_TYPE = defaultType
 * CZ_SCOPE = defaultScope
 * CZ_SUBJECT = defaultSubject
 * CZ_BODY = defaultBody
