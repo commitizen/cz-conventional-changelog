@@ -33,12 +33,30 @@ Like commitizen, you specify the configuration of cz-conventional-changelog thro
                 "title": "Features"
               },
               ...
-            }
+            },
+            "additionalTypes": {}
         }
     }
 // ...
 }
 ```
+
+The `additionalTypes` property can be used to add custom types in addition to those defined by **conventional-commit-types**:
+
+```json5
+    "config": {
+        "commitizen": {
+            "path": "./node_modules/cz-conventional-changelog",
+            "additionalTypes": {
+                "mycustomtype": {
+                    "description": "A custom commit type for custom changes",
+                    "title": "My Custom Changes"
+                }
+            }
+        }
+    }
+```
+
 ### Environment variables
 
 The following environment varibles can be used to override any default configuration or package.json based configuration.
