@@ -26,14 +26,7 @@ Like commitizen, you specify the configuration of cz-conventional-changelog thro
             "defaultSubject": "",
             "defaultBody": "",
             "defaultIssues": "",
-            "types": {
-              ...
-              "feat": {
-                "description": "A new feature",
-                "title": "Features"
-              },
-              ...
-            },
+            "types": null,
             "additionalTypes": {}
         }
     }
@@ -41,7 +34,24 @@ Like commitizen, you specify the configuration of cz-conventional-changelog thro
 }
 ```
 
-The `additionalTypes` property can be used to add custom types in addition to those defined by **conventional-commit-types**:
+The `types` property can be used to *replace* the types defined by **conventional-commit-types**:
+
+```json5
+    "config": {
+        "commitizen": {
+            "types": {
+                ...
+                "feat": {
+                    "description": "A new feature",
+                    "title": "Features"
+                },
+                ...
+            }
+        }
+    }
+```
+
+The `additionalTypes` property can be used to add custom types in *addition to* those defined by **conventional-commit-types**:
 
 ```json5
     "config": {
