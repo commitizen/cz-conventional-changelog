@@ -40,7 +40,7 @@
     "semver": "^6.2.0"
   },
   "optionalDependencies": {
-    "@commitlint/load": ">6.1.1"
+    "@commitlint/load": ">=8.3.5"
   },
   "config": {
     "commitizen": {
