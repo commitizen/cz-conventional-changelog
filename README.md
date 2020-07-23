@@ -19,6 +19,7 @@ Like commitizen, you specify the configuration of cz-conventional-changelog thro
     "config": {
         "commitizen": {
             "path": "./node_modules/cz-conventional-changelog",
+            "disableScopeLowerCase": false,
             "maxHeaderWidth": 100,
             "maxLineWidth": 100,
             "defaultType": "",
