@@ -36,7 +36,7 @@ var filterSubject = function(subject) {
 // This can be any kind of SystemJS compatible module.
 // We use Commonjs here, but ES6 or AMD would do just
 // fine.
-module.exports = function(options) {
+module.exports = function(options, inquirer) {
   var types = options.types;
 
   var length = longest(Object.keys(types)).length + 1;
@@ -49,9 +49,7 @@ module.exports = function(options) {
 
   return {
     // When a user runs `git cz`, prompter will
-    // be executed. We pass you cz, which currently
-    // is just an instance of inquirer.js. Using
-    // this you can ask questions and get answers.
+    // be executed.
     //
     // The commit callback should be executed when
     // you're ready to send back a commit template
@@ -59,14 +57,14 @@ module.exports = function(options) {
     //
     // By default, we'll de-indent your commit
     // template and will keep empty lines.
-    prompter: function(cz, commit) {
+    prompter: function(commit) {
       // Let's ask some questions of the user
       // so that we can populate our commit
       // template.
-      //
-      // See inquirer.js docs for specifics.
-      // You can also opt to use another input
-      // collection library if you prefer.
+
+      // FIXME: Avoid changing the entire file because of the longer variable of inquirer vs cz
+      var cz = inquirer;
+
       cz.prompt([
         {
           type: 'list',

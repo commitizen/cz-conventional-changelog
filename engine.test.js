@@ -387,6 +387,7 @@ describe('commitlint config header-max-length', function() {
       var options = undefined;
       mock('./engine', function(opts) {
         options = opts;
+        return { prompter: function() {} };
       });
       if (headerMaxLength) {
         mock('cosmiconfig', function() {
@@ -406,6 +407,9 @@ describe('commitlint config header-max-length', function() {
       }
 
       mock.reRequire('./index');
+
+      require('./index').prompter();
+
       try {
         return mock
           .reRequire('@commitlint/load')()
@@ -460,28 +464,43 @@ describe('commitlint config header-max-length', function() {
     });
   }
 });
+
+// processor accepts questions and returns an array of answers:
+function createMockInquirer(processor) {
+  function Separator(line) {
+    if (!(this instanceof Separator)) {
+      throw new Error('inquirer.Separator must be invoked with `new` keyword');
+    }
+    return { type: 'separator', line: line };
+  }
+  return {
+    Separator: Separator,
+    prompt: function(questions) {
+      return {
+        then: function(finalizer) {
+          finalizer(processor(questions));
+        }
+      };
+    }
+  };
+}
+
 function commitMessage(answers, options) {
   options = options || defaultOptions;
+
   var result = null;
-  engine(options).prompter(
-    {
-      prompt: function(questions) {
-        return {
-          then: function(finalizer) {
-            processQuestions(questions, answers, options);
-            finalizer(answers);
-          }
-        };
-      }
-    },
-    function(message) {
-      result = message;
-    }
-  );
+  var mockInquirer = createMockInquirer(questions => {
+    processQuestions(questions, answers);
+    return answers;
+  });
+
+  engine(options, mockInquirer).prompter(function(message) {
+    result = message;
+  });
   return result;
 }
 
-function processQuestions(questions, answers, options) {
+function processQuestions(questions, answers) {
   for (var i in questions) {
     var question = questions[i];
     var answer = answers[question.name];
@@ -504,14 +523,13 @@ function processQuestions(questions, answers, options) {
 function getQuestions(options) {
   options = options || defaultOptions;
   var result = null;
-  engine(options).prompter({
-    prompt: function(questions) {
-      result = questions;
-      return {
-        then: function() {}
-      };
-    }
+
+  var mockInquirer = createMockInquirer(questions => {
+    result = questions;
+    return [];
   });
+
+  engine(options, mockInquirer).prompter(message => {});
   return result;
 }
 

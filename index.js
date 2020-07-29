@@ -45,4 +45,8 @@ var options = {
   } catch (err) {}
 })(options);
 
-module.exports = engine(options);
+module.exports = {
+  prompter: function czConventionalChangelogAdapter(inquirer, commit) {
+    engine(options, inquirer).prompter(commit);
+  }
+};
