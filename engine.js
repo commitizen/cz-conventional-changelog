@@ -38,14 +38,48 @@ var filterSubject = function(subject) {
 // fine.
 module.exports = function(options, inquirer) {
   var types = options.types;
-
-  var length = longest(Object.keys(types)).length + 1;
-  var choices = map(types, function(type, key) {
+  var longestTypeChoice = longest(Object.keys(types)).length + 1;
+  var typeChoices = map(types, function(type, key) {
     return {
-      name: (key + ':').padEnd(length) + ' ' + type.description,
+      name: (key + ':').padEnd(longestTypeChoice) + ' ' + type.description,
       value: key
     };
   });
+
+  var predefinedScopes = options.scopes || [];
+  var hasPredefinedScopes = predefinedScopes.length > 0;
+
+  var otherScopeChoice = 'something else...';
+  var scopeChoices = [{ name: chalk.dim(chalk.white('(skip)')), value: '' }]
+    .concat(
+      map(predefinedScopes, function(scope) {
+        return {
+          name: scope,
+          value: scope
+        };
+      })
+    )
+    .concat([
+      new inquirer.Separator(''),
+      { name: otherScopeChoice, value: otherScopeChoice }
+    ]);
+
+  var defaultScopeChoice;
+
+  if (options.defaultScope) {
+    var foundDefault = scopeChoices.findIndex(function(choice) {
+      if (choice.type === 'separator') {
+        return false;
+      }
+      return (
+        choice.value === options.defaultScope ||
+        choice.name === options.defaultScope
+      );
+    });
+
+    defaultScopeChoice =
+      foundDefault === -1 ? scopeChoices.length - 1 : foundDefault;
+  }
 
   return {
     // When a user runs `git cz`, prompter will
@@ -70,19 +104,51 @@ module.exports = function(options, inquirer) {
           type: 'list',
           name: 'type',
           message: "Select the type of change that you're committing:",
-          choices: choices,
+          choices: typeChoices,
           default: options.defaultType
+        },
+        {
+          type: 'list',
+          name: 'scopeChoices',
+          message:
+            'What is the scope of this change' +
+            (defaultScopeChoice > 0 ? '' : ' (press enter to skip)') +
+            ':',
+          choices: scopeChoices,
+          default: function() {
+            return (
+              scopeChoices[defaultScopeChoice] &&
+              scopeChoices[defaultScopeChoice].value
+            );
+          },
+          filter: function(value) {
+            return options.disableScopeLowerCase
+              ? value.trim()
+              : value.trim().toLowerCase();
+          },
+          when: function() {
+            return hasPredefinedScopes;
+          }
         },
         {
           type: 'input',
           name: 'scope',
           message:
-            'What is the scope of this change (e.g. component or file name): (press enter to skip)',
+            'What is the scope of this change (e.g. component or file name): ' +
+            chalk.grey('(press enter to skip)') +
+            '\n> ',
           default: options.defaultScope,
           filter: function(value) {
             return options.disableScopeLowerCase
               ? value.trim()
               : value.trim().toLowerCase();
+          },
+          when: function(answers) {
+            return (
+              (answers.scopeChoices &&
+                answers.scopeChoices === otherScopeChoice) ||
+              !hasPredefinedScopes
+            );
           }
         },
         {
@@ -195,7 +261,12 @@ module.exports = function(options, inquirer) {
         };
 
         // parentheses are only needed when a scope is present
-        var scope = answers.scope ? '(' + answers.scope + ')' : '';
+        var scope;
+        if (answers.scopeChoices && answers.scopeChoices !== otherScopeChoice) {
+          scope = '(' + answers.scopeChoices + ')';
+        } else {
+          scope = answers.scope ? '(' + answers.scope + ')' : '';
+        }
 
         // Hard limit this line in the validate
         var head = answers.type + scope + ': ' + answers.subject;

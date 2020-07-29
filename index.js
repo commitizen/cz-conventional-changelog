@@ -4,6 +4,8 @@ var engine = require('./engine');
 var conventionalCommitTypes = require('conventional-commit-types');
 var configLoader = require('commitizen').configLoader;
 
+var IS_VALID_SCOPE_REGEX = /^[a-zA-Z0-9]+$/;
+
 function isValidCommitlintRule(rule) {
   return Array.isArray(rule) && rule.length >= 3;
 }
@@ -28,7 +30,16 @@ function loadOptions(params) {
     env.CZ_MAX_LINE_WIDTH && parseInt(env.CZ_MAX_LINE_WIDTH, 10);
   var maxLineWidth = CZ_MAX_LINE_WIDTH || config.maxLineWidth || 100;
 
+  // scopes can come from environment, commitizen config, commitlint config or the default of free choice:
+  var scopes = config.scopes || [];
+  if (env.CZ_SCOPES) {
+    scopes = env.CZ_SCOPES.split(',').filter(function(scope) {
+      return IS_VALID_SCOPE_REGEX.test(scope);
+    });
+  }
+
   var options = {
+    scopes: scopes,
     types: config.types || conventionalCommitTypes.types,
     defaultType: env.CZ_TYPE || config.defaultType,
     defaultScope: env.CZ_SCOPE || config.defaultScope,
@@ -52,6 +63,14 @@ function loadOptions(params) {
           !config.maxHeaderWidth
         ) {
           options.maxHeaderWidth = maxHeaderLengthRule[2];
+        }
+
+        var scopesEnumRule = clConfig.rules['scope-enum'];
+        if (
+          isValidCommitlintRule(scopesEnumRule) &&
+          Array.isArray(scopesEnumRule[2])
+        ) {
+          options.scopes = scopes.concat(scopesEnumRule[2]);
         }
 
         return options;

@@ -419,13 +419,27 @@ function commitMessage(answers, options) {
 function processQuestions(questions, answers) {
   for (var i in questions) {
     var question = questions[i];
+    var skipQuestion = false;
 
     var message =
       typeof question.message === 'function'
         ? question.message(answers)
         : question.message;
 
-    debug('Asked: ' + message);
+    if (question.when) {
+      if (typeof question.when === 'function') {
+        skipQuestion = !question.when(answers);
+      } else {
+        skipQuestion = !question.when;
+      }
+    }
+
+    if (skipQuestion) {
+      debug('Skipped: ' + message);
+      continue;
+    } else {
+      debug('Asked: ' + message);
+    }
 
     var answer = answers[question.name];
 
@@ -504,7 +518,9 @@ function questionFilter(name, answer, options) {
 function questionDefault(name, options) {
   options = options || defaultOptions;
   var question = getQuestion(name, options);
-  return question.default;
+  return typeof question.default === 'function'
+    ? question.default()
+    : question.default;
 }
 
 function questionWhen(name, answers, options) {

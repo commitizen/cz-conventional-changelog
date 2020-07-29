@@ -7,6 +7,7 @@ var expect = chai.expect;
 chai.should();
 
 var defaultConfig = {
+  scopes: [],
   types: conventionalCommitTypes.types,
   defaultType: undefined,
   defaultScope: undefined,
