@@ -241,18 +241,42 @@ describe('commit message', function() {
 });
 
 describe('validation', function() {
-  it('subject exceeds max length', function() {
-    expect(() =>
-      commitMessage({
-        type,
-        scope,
-        subject: longBody
-      })
-    ).to.throw(
-      'length must be less than or equal to ' +
-        `${defaultOptions.maxLineWidth - type.length - scope.length - 4}`
-    );
+  describe('subject exceeds max length', function() {
+    it('using the default max length', function() {
+      expect(() =>
+        commitMessage({
+          type,
+          scope,
+          subject: longBody
+        })
+      ).to.throw(
+        'length must be less than or equal to ' +
+          `${defaultOptions.maxLineWidth - type.length - scope.length - 4}`
+      );
+    });
+
+    it('using a custom max length', function() {
+      var customMaxHeaderWidth = 30;
+
+      expect(() =>
+        commitMessage(
+          {
+            type,
+            scope,
+            subject: longBody
+          },
+          {
+            ...defaultOptions,
+            maxHeaderWidth: customMaxHeaderWidth
+          }
+        )
+      ).to.throw(
+        'length must be less than or equal to ' +
+          `${customMaxHeaderWidth - type.length - scope.length - 4}`
+      );
+    });
   });
+
   it('empty subject', function() {
     expect(() =>
       commitMessage({
