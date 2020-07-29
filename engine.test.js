@@ -1,8 +1,6 @@
 var chai = require('chai');
 var chalk = require('chalk');
 var engine = require('./engine');
-var mock = require('mock-require');
-var semver = require('semver');
 
 var types = require('conventional-commit-types').types;
 
@@ -378,91 +376,6 @@ describe('when', function() {
         isIssueAffected: true
       })
     ).to.be.true);
-});
-
-describe('commitlint config header-max-length', function() {
-  //commitlint config parser only supports Node 6.0.0 and higher
-  if (semver.gte(process.version, '6.0.0')) {
-    function mockOptions(headerMaxLength) {
-      var options = undefined;
-      mock('./engine', function(opts) {
-        options = opts;
-        return { prompter: function() {} };
-      });
-      if (headerMaxLength) {
-        mock('cosmiconfig', function() {
-          return {
-            load: function(cwd) {
-              return {
-                filepath: cwd + '/.commitlintrc.js',
-                config: {
-                  rules: {
-                    'header-max-length': [2, 'always', headerMaxLength]
-                  }
-                }
-              };
-            }
-          };
-        });
-      }
-
-      mock.reRequire('./index');
-
-      require('./index').prompter();
-
-      try {
-        return mock
-          .reRequire('@commitlint/load')()
-          .then(function() {
-            return options;
-          });
-      } catch (err) {
-        return Promise.resolve(options);
-      }
-    }
-
-    afterEach(function() {
-      delete require.cache[require.resolve('./index')];
-      delete require.cache[require.resolve('@commitlint/load')];
-      delete process.env.CZ_MAX_HEADER_WIDTH;
-      mock.stopAll();
-    });
-
-    it('with no environment or commitizen config override', function() {
-      return mockOptions(72).then(function(options) {
-        expect(options).to.have.property('maxHeaderWidth', 72);
-      });
-    });
-
-    it('with environment variable override', function() {
-      process.env.CZ_MAX_HEADER_WIDTH = '105';
-      return mockOptions(72).then(function(options) {
-        expect(options).to.have.property('maxHeaderWidth', 105);
-      });
-    });
-
-    it('with commitizen config override', function() {
-      mock('commitizen', {
-        configLoader: {
-          load: function() {
-            return {
-              maxHeaderWidth: 103
-            };
-          }
-        }
-      });
-      return mockOptions(72).then(function(options) {
-        expect(options).to.have.property('maxHeaderWidth', 103);
-      });
-    });
-  } else {
-    //Node 4 doesn't support commitlint so the config value should remain the same
-    it('default value for Node 4', function() {
-      return mockOptions(72).then(function(options) {
-        expect(options).to.have.property('maxHeaderWidth', 100);
-      });
-    });
-  }
 });
 
 // processor accepts questions and returns an array of answers:
