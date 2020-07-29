@@ -2,6 +2,8 @@ var chai = require('chai');
 var chalk = require('chalk');
 var engine = require('./engine');
 
+var debug = require('debug')('tests');
+
 var types = require('conventional-commit-types').types;
 
 var expect = chai.expect;
@@ -409,6 +411,7 @@ function commitMessage(answers, options) {
 
   engine(options, mockInquirer).prompter(function(message) {
     result = message;
+    debug('Commit Message:\n\n' + message);
   });
   return result;
 }
@@ -416,16 +419,29 @@ function commitMessage(answers, options) {
 function processQuestions(questions, answers) {
   for (var i in questions) {
     var question = questions[i];
+
+    var message =
+      typeof question.message === 'function'
+        ? question.message(answers)
+        : question.message;
+
+    debug('Asked: ' + message);
+
     var answer = answers[question.name];
+
+    debug('Answer: ' + answer);
+
     var validation =
       answer === undefined || !question.validate
         ? true
         : question.validate(answer, answers);
     if (validation !== true) {
-      throw new Error(
+      var errorMessage =
         validation ||
-          `Answer '${answer}' to question '${question.name}' was invalid`
-      );
+        `Answer '${answer}' to question '${question.name}' was invalid`;
+
+      debug('Threw Error: ' + errorMessage);
+      throw new Error(errorMessage);
     }
     if (question.filter && answer) {
       answers[question.name] = question.filter(answer);
@@ -442,7 +458,9 @@ function getQuestions(options) {
     return [];
   });
 
-  engine(options, mockInquirer).prompter(message => {});
+  engine(options, mockInquirer).prompter(message => {
+    debug('Commit Message:\n\n' + message);
+  });
   return result;
 }
 
