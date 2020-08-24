@@ -2,7 +2,11 @@
   "extends": [
     "config:base"
   ],
-  "updateTypes": ["major"],
+  "packageRules": [
+    {
+      "updateTypes": ["major"]
+    }
+  ],
   "automerge": false,
   "assigneesFromCodeOwners": true,
   "assigneesSampleSize": 2,
