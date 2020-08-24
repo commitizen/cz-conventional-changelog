@@ -36,22 +36,54 @@ var filterSubject = function(subject) {
 // This can be any kind of SystemJS compatible module.
 // We use Commonjs here, but ES6 or AMD would do just
 // fine.
-module.exports = function(options) {
+module.exports = function(options, inquirer) {
   var types = options.types;
-
-  var length = longest(Object.keys(types)).length + 1;
-  var choices = map(types, function(type, key) {
+  var longestTypeChoice = longest(Object.keys(types)).length + 1;
+  var typeChoices = map(types, function(type, key) {
     return {
-      name: (key + ':').padEnd(length) + ' ' + type.description,
+      name: (key + ':').padEnd(longestTypeChoice) + ' ' + type.description,
       value: key
     };
   });
 
+  var predefinedScopes = options.scopes || [];
+  var hasPredefinedScopes = predefinedScopes.length > 0;
+
+  var otherScopeChoice = 'something else...';
+  var scopeChoices = [{ name: chalk.dim(chalk.white('(skip)')), value: '' }]
+    .concat(
+      map(predefinedScopes, function(scope) {
+        return {
+          name: scope,
+          value: scope
+        };
+      })
+    )
+    .concat([
+      new inquirer.Separator(''),
+      { name: otherScopeChoice, value: otherScopeChoice }
+    ]);
+
+  var defaultScopeChoice;
+
+  if (options.defaultScope) {
+    var foundDefault = scopeChoices.findIndex(function(choice) {
+      if (choice.type === 'separator') {
+        return false;
+      }
+      return (
+        choice.value === options.defaultScope ||
+        choice.name === options.defaultScope
+      );
+    });
+
+    defaultScopeChoice =
+      foundDefault === -1 ? scopeChoices.length - 1 : foundDefault;
+  }
+
   return {
     // When a user runs `git cz`, prompter will
-    // be executed. We pass you cz, which currently
-    // is just an instance of inquirer.js. Using
-    // this you can ask questions and get answers.
+    // be executed.
     //
     // The commit callback should be executed when
     // you're ready to send back a commit template
@@ -59,32 +91,64 @@ module.exports = function(options) {
     //
     // By default, we'll de-indent your commit
     // template and will keep empty lines.
-    prompter: function(cz, commit) {
+    prompter: function(commit) {
       // Let's ask some questions of the user
       // so that we can populate our commit
       // template.
-      //
-      // See inquirer.js docs for specifics.
-      // You can also opt to use another input
-      // collection library if you prefer.
+
+      // FIXME: Avoid changing the entire file because of the longer variable of inquirer vs cz
+      var cz = inquirer;
+
       cz.prompt([
         {
           type: 'list',
           name: 'type',
           message: "Select the type of change that you're committing:",
-          choices: choices,
+          choices: typeChoices,
           default: options.defaultType
+        },
+        {
+          type: 'list',
+          name: 'scopeChoices',
+          message:
+            'What is the scope of this change' +
+            (defaultScopeChoice > 0 ? '' : ' (press enter to skip)') +
+            ':',
+          choices: scopeChoices,
+          default: function() {
+            return (
+              scopeChoices[defaultScopeChoice] &&
+              scopeChoices[defaultScopeChoice].value
+            );
+          },
+          filter: function(value) {
+            return options.disableScopeLowerCase
+              ? value.trim()
+              : value.trim().toLowerCase();
+          },
+          when: function() {
+            return hasPredefinedScopes;
+          }
         },
         {
           type: 'input',
           name: 'scope',
           message:
-            'What is the scope of this change (e.g. component or file name): (press enter to skip)',
+            'What is the scope of this change (e.g. component or file name): ' +
+            chalk.grey('(press enter to skip)') +
+            '\n> ',
           default: options.defaultScope,
           filter: function(value) {
             return options.disableScopeLowerCase
               ? value.trim()
               : value.trim().toLowerCase();
+          },
+          when: function(answers) {
+            return (
+              (answers.scopeChoices &&
+                answers.scopeChoices === otherScopeChoice) ||
+              !hasPredefinedScopes
+            );
           }
         },
         {
@@ -197,7 +261,12 @@ module.exports = function(options) {
         };
 
         // parentheses are only needed when a scope is present
-        var scope = answers.scope ? '(' + answers.scope + ')' : '';
+        var scope;
+        if (answers.scopeChoices && answers.scopeChoices !== otherScopeChoice) {
+          scope = '(' + answers.scopeChoices + ')';
+        } else {
+          scope = answers.scope ? '(' + answers.scope + ')' : '';
+        }
 
         // Hard limit this line in the validate
         var head = answers.type + scope + ': ' + answers.subject;

@@ -1,8 +1,8 @@
 var chai = require('chai');
 var chalk = require('chalk');
 var engine = require('./engine');
-var mock = require('mock-require');
-var semver = require('semver');
+
+var debug = require('debug')('tests');
 
 var types = require('conventional-commit-types').types;
 
@@ -241,18 +241,42 @@ describe('commit message', function() {
 });
 
 describe('validation', function() {
-  it('subject exceeds max length', function() {
-    expect(() =>
-      commitMessage({
-        type,
-        scope,
-        subject: longBody
-      })
-    ).to.throw(
-      'length must be less than or equal to ' +
-        `${defaultOptions.maxLineWidth - type.length - scope.length - 4}`
-    );
+  describe('subject exceeds max length', function() {
+    it('using the default max length', function() {
+      expect(() =>
+        commitMessage({
+          type,
+          scope,
+          subject: longBody
+        })
+      ).to.throw(
+        'length must be less than or equal to ' +
+          `${defaultOptions.maxLineWidth - type.length - scope.length - 4}`
+      );
+    });
+
+    it('using a custom max length', function() {
+      var customMaxHeaderWidth = 30;
+
+      expect(() =>
+        commitMessage(
+          {
+            type,
+            scope,
+            subject: longBody
+          },
+          {
+            ...defaultOptions,
+            maxHeaderWidth: customMaxHeaderWidth
+          }
+        )
+      ).to.throw(
+        'length must be less than or equal to ' +
+          `${customMaxHeaderWidth - type.length - scope.length - 4}`
+      );
+    });
   });
+
   it('empty subject', function() {
     expect(() =>
       commitMessage({
@@ -380,120 +404,82 @@ describe('when', function() {
     ).to.be.true);
 });
 
-describe('commitlint config header-max-length', function() {
-  //commitlint config parser only supports Node 6.0.0 and higher
-  if (semver.gte(process.version, '6.0.0')) {
-    function mockOptions(headerMaxLength) {
-      var options = undefined;
-      mock('./engine', function(opts) {
-        options = opts;
-      });
-      if (headerMaxLength) {
-        mock('cosmiconfig', function() {
-          return {
-            load: function(cwd) {
-              return {
-                filepath: cwd + '/.commitlintrc.js',
-                config: {
-                  rules: {
-                    'header-max-length': [2, 'always', headerMaxLength]
-                  }
-                }
-              };
-            }
-          };
-        });
-      }
-
-      mock.reRequire('./index');
-      try {
-        return mock
-          .reRequire('@commitlint/load')()
-          .then(function() {
-            return options;
-          });
-      } catch (err) {
-        return Promise.resolve(options);
-      }
+// processor accepts questions and returns an array of answers:
+function createMockInquirer(processor) {
+  function Separator(line) {
+    if (!(this instanceof Separator)) {
+      throw new Error('inquirer.Separator must be invoked with `new` keyword');
     }
-
-    afterEach(function() {
-      delete require.cache[require.resolve('./index')];
-      delete require.cache[require.resolve('@commitlint/load')];
-      delete process.env.CZ_MAX_HEADER_WIDTH;
-      mock.stopAll();
-    });
-
-    it('with no environment or commitizen config override', function() {
-      return mockOptions(72).then(function(options) {
-        expect(options).to.have.property('maxHeaderWidth', 72);
-      });
-    });
-
-    it('with environment variable override', function() {
-      process.env.CZ_MAX_HEADER_WIDTH = '105';
-      return mockOptions(72).then(function(options) {
-        expect(options).to.have.property('maxHeaderWidth', 105);
-      });
-    });
-
-    it('with commitizen config override', function() {
-      mock('commitizen', {
-        configLoader: {
-          load: function() {
-            return {
-              maxHeaderWidth: 103
-            };
-          }
-        }
-      });
-      return mockOptions(72).then(function(options) {
-        expect(options).to.have.property('maxHeaderWidth', 103);
-      });
-    });
-  } else {
-    //Node 4 doesn't support commitlint so the config value should remain the same
-    it('default value for Node 4', function() {
-      return mockOptions(72).then(function(options) {
-        expect(options).to.have.property('maxHeaderWidth', 100);
-      });
-    });
+    return { type: 'separator', line: line };
   }
-});
+  return {
+    Separator: Separator,
+    prompt: function(questions) {
+      return {
+        then: function(finalizer) {
+          finalizer(processor(questions));
+        }
+      };
+    }
+  };
+}
+
 function commitMessage(answers, options) {
   options = options || defaultOptions;
+
   var result = null;
-  engine(options).prompter(
-    {
-      prompt: function(questions) {
-        return {
-          then: function(finalizer) {
-            processQuestions(questions, answers, options);
-            finalizer(answers);
-          }
-        };
-      }
-    },
-    function(message) {
-      result = message;
-    }
-  );
+  var mockInquirer = createMockInquirer(questions => {
+    processQuestions(questions, answers);
+    return answers;
+  });
+
+  engine(options, mockInquirer).prompter(function(message) {
+    result = message;
+    debug('Commit Message:\n\n' + message);
+  });
   return result;
 }
 
-function processQuestions(questions, answers, options) {
+function processQuestions(questions, answers) {
   for (var i in questions) {
     var question = questions[i];
+    var skipQuestion = false;
+
+    var message =
+      typeof question.message === 'function'
+        ? question.message(answers)
+        : question.message;
+
+    if (question.when) {
+      if (typeof question.when === 'function') {
+        skipQuestion = !question.when(answers);
+      } else {
+        skipQuestion = !question.when;
+      }
+    }
+
+    if (skipQuestion) {
+      debug('Skipped: ' + message);
+      continue;
+    } else {
+      debug('Asked: ' + message);
+    }
+
     var answer = answers[question.name];
+
+    debug('Answer: ' + answer);
+
     var validation =
       answer === undefined || !question.validate
         ? true
         : question.validate(answer, answers);
     if (validation !== true) {
-      throw new Error(
+      var errorMessage =
         validation ||
-          `Answer '${answer}' to question '${question.name}' was invalid`
-      );
+        `Answer '${answer}' to question '${question.name}' was invalid`;
+
+      debug('Threw Error: ' + errorMessage);
+      throw new Error(errorMessage);
     }
     if (question.filter && answer) {
       answers[question.name] = question.filter(answer);
@@ -504,13 +490,14 @@ function processQuestions(questions, answers, options) {
 function getQuestions(options) {
   options = options || defaultOptions;
   var result = null;
-  engine(options).prompter({
-    prompt: function(questions) {
-      result = questions;
-      return {
-        then: function() {}
-      };
-    }
+
+  var mockInquirer = createMockInquirer(questions => {
+    result = questions;
+    return [];
+  });
+
+  engine(options, mockInquirer).prompter(message => {
+    debug('Commit Message:\n\n' + message);
   });
   return result;
 }
@@ -555,7 +542,9 @@ function questionFilter(name, answer, options) {
 function questionDefault(name, options) {
   options = options || defaultOptions;
   var question = getQuestion(name, options);
-  return question.default;
+  return typeof question.default === 'function'
+    ? question.default()
+    : question.default;
 }
 
 function questionWhen(name, answers, options) {
