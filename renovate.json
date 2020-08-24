@@ -1,5 +1,15 @@
 {
   "extends": [
     "config:base"
+  ],
+  "updateTypes": ["major"],
+  "automerge": false,
+  "assigneesFromCodeOwners": true,
+  "assigneesSampleSize": 2,
+  "bumpVersion": "minor",
+  "commitBodyTable": true,
+  "rangeStrategy": "pin"
+  "labels": [
+    "maintenance", "renovate"
   ]
 }
