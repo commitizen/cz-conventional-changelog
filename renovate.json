@@ -8,7 +8,7 @@
   "assigneesSampleSize": 2,
   "bumpVersion": "minor",
   "commitBodyTable": true,
-  "rangeStrategy": "pin"
+  "rangeStrategy": "pin",
   "labels": [
     "maintenance", "renovate"
   ]
