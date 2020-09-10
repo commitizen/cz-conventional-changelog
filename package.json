@@ -1,6 +1,6 @@
 {
-  "name": "cz-conventional-changelog",
-  "version": "0.0.0-semantically-released.0",
+  "name": "@skywire-london/cz-conventional-changelog",
+  "version": "3.3.0",
   "description": "Commitizen adapter following the conventional-changelog format.",
   "main": "index.js",
   "scripts": {
@@ -9,16 +9,19 @@
     "format": "prettier --write *.js",
     "semantic-release": "semantic-release"
   },
-  "homepage": "https://github.com/commitizen/cz-conventional-changelog",
+  "homepage": "https://github.com/Skywire/cz-conventional-changelog",
   "repository": {
     "type": "git",
-    "url": "https://github.com/commitizen/cz-conventional-changelog.git"
+    "url": "https://github.com/Skywire/cz-conventional-changelog.git"
   },
   "engineStrict": true,
   "engines": {
     "node": ">= 10"
   },
   "author": "Jim Cummins <jimthedev@gmail.com>",
+  "contributors": [
+    "David Alexander <david+npm@skywire.co.uk>"
+  ],
   "license": "MIT",
   "dependencies": {
     "chalk": "^2.4.1",
