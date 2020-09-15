@@ -4,6 +4,7 @@ var wrap = require('word-wrap');
 var map = require('lodash.map');
 var longest = require('longest');
 var chalk = require('chalk');
+const branchName = require('current-git-branch');
 
 var filter = function(array) {
   return array.filter(function(x) {
@@ -31,6 +32,12 @@ var filterSubject = function(subject, disableSubjectLowerCase) {
     subject = subject.slice(0, subject.length - 1);
   }
   return subject;
+};
+
+let getCurrentBranch = function() {
+  let name = branchName();
+
+  return name.replace('dd#', '').replace('DD#', '');
 };
 
 // This can be any kind of SystemJS compatible module.
@@ -72,6 +79,7 @@ module.exports = function(options) {
           type: 'input',
           name: 'donedone',
           message: 'DoneDone Task ID e.g. 1123 (required):\n',
+          default: getCurrentBranch(),
           validate: function(input) {
             if (!input) {
               return 'Must specify task ID';
