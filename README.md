@@ -1,5 +1,8 @@
-# cz-conventional-changelog
-
+# cz-conventional-changelog для kt.team
+## Добавляен номер задачи к описанию коммита
+```
+feat(scope):[001] add new commit example
+```
 [![Greenkeeper badge](https://badges.greenkeeper.io/commitizen/cz-conventional-changelog.svg)](https://greenkeeper.io/)
 
 Status:
@@ -9,52 +12,48 @@ Status:
 
 Part of the [commitizen](https://github.com/commitizen/cz-cli) family. Prompts for [conventional changelog](https://github.com/conventional-changelog/conventional-changelog) standard.
 
-## Configuration
+###install and use:
+```
+$ npm install -g commitizen
 
-### package.json
+$ git clone https://github.com/evgeniizab/cz-conventional-changelog-kt.git
 
-Like commitizen, you specify the configuration of cz-conventional-changelog through the package.json's `config.commitizen` key.
+$ npm install -g cz-conventional-changelog-kt
 
-```json5
-{
-// ...  default values
-    "config": {
-        "commitizen": {
-            "path": "./node_modules/cz-conventional-changelog",
-            "disableScopeLowerCase": false,
-            "disableSubjectLowerCase": false,
-            "maxHeaderWidth": 100,
-            "maxLineWidth": 100,
-            "defaultType": "",
-            "defaultScope": "",
-            "defaultSubject": "",
-            "defaultBody": "",
-            "defaultIssues": "",
-            "types": {
-              ...
-              "feat": {
-                "description": "A new feature",
-                "title": "Features"
-              },
-              ...
-            }
-        }
-    }
-// ...
-}
+$ echo '{ "path": "cz-conventional-changelog-kt" }' > ~/.czrc
 ```
 
-### Environment variables
+```
+$ cz
+? Select the type of change that you're committing: (Use arrow keys)
+❯ feat:     A new feature
+  fix:      A bug fix
+  docs:     Documentation only changes
+  style:    Changes that do not affect the meaning of the code (white-space, formatting, missing semi-colons, etc)
+  refactor: A code change that neither fixes a bug nor adds a feature
+  perf:     A code change that improves performance
+  test:     Adding missing tests or correcting existing tests
+(Move up and down to reveal more choices)
+```
 
-The following environment varibles can be used to override any default configuration or package.json based configuration.
+## Standart version
+[link to official rep.](https://github.com/conventional-changelog/standard-version)
 
-* CZ_TYPE = defaultType
-* CZ_SCOPE = defaultScope
-* CZ_SUBJECT = defaultSubject
-* CZ_BODY = defaultBody
-* CZ_MAX_HEADER_WIDTH = maxHeaderWidth
-* CZ_MAX_LINE_WIDTH = maxLineWidth
+**Lifecycle Scripts**
 
-### Commitlint
+standard-version supports lifecycle scripts. These allow you to execute your own supplementary commands during the release. The following hooks are available and execute in the order documented:
+    prerelease: executed before anything happens. If the prerelease script returns a non-zero exit code, versioning will be aborted, but it has no other effect on the process.
 
-If using the [commitlint](https://github.com/conventional-changelog/commitlint) js library, the "maxHeaderWidth" configuration property will default to the configuration of the "header-max-length" rule instead of the hard coded value of 100.  This can be ovewritten by setting the 'maxHeaderWidth' configuration in package.json or the CZ_MAX_HEADER_WIDTH environment variable.
+    prebump/postbump: executed before and after the version is bumped. If the prebump script returns a version #, it will be used rather than the version calculated by standard-version.
+
+    prechangelog/postchangelog: executes before and after the CHANGELOG is generated.
+
+    precommit/postcommit: called before and after the commit step.
+
+    pretag/posttag: called before and after the tagging step.
+### install and use:
+```bash
+$ npm i -g standard-version
+cd project_dir
+$ standard-version
+```
