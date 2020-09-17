@@ -209,13 +209,13 @@ module.exports = function(options) {
         };
 
         // parentheses are only needed when a scope is present
-        var scope = answers.scope ? '(' + answers.scope + ')' : '';
+        var scope = answers.scope ? '(' + answers.scope + ')' : ' ';
 
         //kt task
         var task_number = answers.task_number ? '[' + answers.task_number + '] ' : '';
 
         // Hard limit this line in the validate
-        var head = answers.type + scope + ': ' + task_number + answers.subject;
+        var head = answers.type + scope + ':' + task_number + answers.subject;
 
         // Wrap these lines at options.maxLineWidth characters
         var body = answers.body ? wrap(answers.body, wrapOptions) : false;
