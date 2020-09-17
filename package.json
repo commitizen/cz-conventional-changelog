@@ -1,5 +1,5 @@
 {
-  "name": "cz-conventional-changelog2",
+  "name": "cz-conventional-changelog-kt",
   "version": "0.0.1",
   "description": "Commitizen adapter following the conventional-changelog format.",
   "main": "index.js",
@@ -9,10 +9,10 @@
     "format": "prettier --write *.js",
     "semantic-release": "semantic-release"
   },
-  "homepage": "https://github.com/commitizen/cz-conventional-changelog",
+  "homepage": "https://github.com/evgeniizab/cz-conventional-changelog-kt",
   "repository": {
     "type": "git",
-    "url": "https://github.com/commitizen/cz-conventional-changelog.git"
+    "url": "https://github.com/evgeniizab/cz-conventional-changelog-kt.git"
   },
   "engineStrict": true,
   "engines": {
