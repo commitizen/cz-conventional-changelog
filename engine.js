@@ -37,7 +37,10 @@ var filterSubject = function(subject, disableSubjectLowerCase) {
 let getCurrentBranch = function() {
   let name = branchName();
 
-  return name.replace('dd#', '').replace('DD#', '');
+  return name.replace('dd#', '')
+    .replace('DD#', '')
+    .replace('dd', '')
+    .replace('DD', '');
 };
 
 // This can be any kind of SystemJS compatible module.
