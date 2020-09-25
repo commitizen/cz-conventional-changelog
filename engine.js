@@ -151,7 +151,14 @@ module.exports = function(options) {
           message:
             'Provide a longer description of the change: (press enter to skip)\n',
           default: options.defaultBody
-        }
+        },
+        {
+          type: 'list',
+          name: 'configUpdate',
+          message: "Are you modifying the app/etc/config.php file?",
+          choices: ['No', 'Yes'],
+          default: ['No']
+        },
       ]).then(function(answers) {
         var wrapOptions = {
           trim: true,
@@ -172,7 +179,9 @@ module.exports = function(options) {
         // Wrap these lines at options.maxLineWidth characters
         var body = answers.body ? wrap(answers.body, wrapOptions) : false;
 
-        commit(filter([head, body]).join('\n\n'));
+        var configUpdate = answers.configUpdate === 'Yes' ? '\n\nwith-config-update' : '';
+
+        commit(filter([head, body, configUpdate]).join('\n\n'));
       });
     }
   };
