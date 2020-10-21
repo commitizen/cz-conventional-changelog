@@ -31,21 +31,6 @@ var longBodySplit =
   '\n' +
   longBody.slice(defaultOptions.maxLineWidth * 2, longBody.length).trim();
 var body = 'A quick brown fox jumps over the dog';
-var issues = 'a issues is not a person that kicks things';
-var longIssues =
-  'b b bb b bb b bb b bb b bb b bb b bb b bb b bb b bb b bb b bb b bb b bb b' +
-  'b b bb b bb b bb b bb b bb b bb b bb b bb b bb b bb b bb b bb b bb b bb b bb b bb b bb b bb b' +
-  'b b bb b bb b bb b bb b bb b bb b bb b bb b bb b bb b bb b bb b bb b bb b bb b bb b bb b bb b';
-var breakingChange = 'BREAKING CHANGE: ';
-var breaking = 'asdhdfkjhbakjdhjkashd adhfajkhs asdhkjdsh ahshd';
-var longIssuesSplit =
-  longIssues.slice(0, defaultOptions.maxLineWidth).trim() +
-  '\n' +
-  longIssues
-    .slice(defaultOptions.maxLineWidth, defaultOptions.maxLineWidth * 2)
-    .trim() +
-  '\n' +
-  longIssues.slice(defaultOptions.maxLineWidth * 2, longIssues.length).trim();
 
 describe('commit message', function() {
   it('only header w/ out scope', function() {
@@ -123,10 +108,9 @@ describe('commit message', function() {
       commitMessage({
         type,
         subject,
-        body,
-        issues
+        body
       })
-    ).to.equal(`${type}: ${subject}\n\n${body}\n\n${issues}`);
+    ).to.equal(`${type}: ${subject}\n\n${body}`);
   });
   it('header, body and issues w/ scope', function() {
     expect(
@@ -134,20 +118,18 @@ describe('commit message', function() {
         type,
         scope,
         subject,
-        body,
-        issues
+        body
       })
-    ).to.equal(`${type}(${scope}): ${subject}\n\n${body}\n\n${issues}`);
+    ).to.equal(`${type}(${scope}): ${subject}\n\n${body}`);
   });
   it('header, body and long issues w/ out scope', function() {
     expect(
       commitMessage({
         type,
         subject,
-        body,
-        issues: longIssues
+        body
       })
-    ).to.equal(`${type}: ${subject}\n\n${body}\n\n${longIssuesSplit}`);
+    ).to.equal(`${type}: ${subject}\n\n${body}`);
   });
   it('header, body and long issues w/ scope', function() {
     expect(
@@ -155,11 +137,10 @@ describe('commit message', function() {
         type,
         scope,
         subject,
-        body,
-        issues: longIssues
+        body
       })
     ).to.equal(
-      `${type}(${scope}): ${subject}\n\n${body}\n\n${longIssuesSplit}`
+      `${type}(${scope}): ${subject}\n\n${body}`
     );
   });
   it('header and long body w/ out scope', function() {
@@ -186,10 +167,9 @@ describe('commit message', function() {
       commitMessage({
         type,
         subject,
-        body: longBody,
-        issues
+        body: longBody
       })
-    ).to.equal(`${type}: ${subject}\n\n${longBodySplit}\n\n${issues}`);
+    ).to.equal(`${type}: ${subject}\n\n${longBodySplit}`);
   });
   it('header, long body and issues w/ scope', function() {
     expect(
@@ -197,11 +177,10 @@ describe('commit message', function() {
         type,
         scope,
         subject,
-        body: longBody,
-        issues
+        body: longBody
       })
     ).to.equal(
-      `${type}(${scope}): ${subject}\n\n${longBodySplit}\n\n${issues}`
+      `${type}(${scope}): ${subject}\n\n${longBodySplit}`
     );
   });
   it('header, long body and long issues w/ out scope', function() {
@@ -209,10 +188,9 @@ describe('commit message', function() {
       commitMessage({
         type,
         subject,
-        body: longBody,
-        issues: longIssues
+        body: longBody
       })
-    ).to.equal(`${type}: ${subject}\n\n${longBodySplit}\n\n${longIssuesSplit}`);
+    ).to.equal(`${type}: ${subject}\n\n${longBodySplit}`);
   });
   it('header, long body and long issues w/ scope', function() {
     expect(
@@ -220,11 +198,10 @@ describe('commit message', function() {
         type,
         scope,
         subject,
-        body: longBody,
-        issues: longIssues
+        body: longBody
       })
     ).to.equal(
-      `${type}(${scope}): ${subject}\n\n${longBodySplit}\n\n${longIssuesSplit}`
+      `${type}(${scope}): ${subject}\n\n${longBodySplit}`
     );
   });
   it('header, long body, breaking change, and long issues w/ scope', function() {
@@ -233,12 +210,10 @@ describe('commit message', function() {
         type,
         scope,
         subject,
-        body: longBody,
-        breaking,
-        issues: longIssues
+        body: longBody
       })
     ).to.equal(
-      `${type}(${scope}): ${subject}\n\n${longBodySplit}\n\n${breakingChange}${breaking}\n\n${longIssuesSplit}`
+      `${type}(${scope}): ${subject}\n\n${longBodySplit}`
     );
   });
   it('header, long body, breaking change (with prefix entered), and long issues w/ scope', function() {
@@ -247,12 +222,10 @@ describe('commit message', function() {
         type,
         scope,
         subject,
-        body: longBody,
-        breaking: `${breakingChange}${breaking}`,
-        issues: longIssues
+        body: longBody
       })
     ).to.equal(
-      `${type}(${scope}): ${subject}\n\n${longBodySplit}\n\n${breakingChange}${breaking}\n\n${longIssuesSplit}`
+      `${type}(${scope}): ${subject}\n\n${longBodySplit}`
     );
   });
 });
@@ -321,16 +294,6 @@ describe('defaults', function() {
   it('defaultIssues default', function() {
     expect(questionDefault('issues')).to.be.undefined;
   });
-  it('defaultIssues options', function() {
-    expect(
-      questionDefault(
-        'issues',
-        customOptions({
-          defaultIssues: issues
-        })
-      )
-    ).to.equal(issues);
-  });
   it('disableScopeLowerCase default', function() {
     expect(questionDefault('disableScopeLowerCase')).to.be.undefined;
   });
@@ -379,25 +342,6 @@ describe('filter', function() {
     expect(questionFilter('subject', '  A subject...  ')).to.equal(
       'a subject'
     ));
-});
-
-describe('when', function() {
-  it('breaking by default', () =>
-    expect(questionWhen('breaking', {})).to.be.undefined);
-  it('breaking when isBreaking', () =>
-    expect(
-      questionWhen('breaking', {
-        isBreaking: true
-      })
-    ).to.be.true);
-  it('issues by default', () =>
-    expect(questionWhen('issues', {})).to.be.undefined);
-  it('issues when isIssueAffected', () =>
-    expect(
-      questionWhen('issues', {
-        isIssueAffected: true
-      })
-    ).to.be.true);
 });
 
 describe('commitlint config header-max-length', function() {
