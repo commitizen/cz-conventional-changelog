@@ -1,6 +1,6 @@
 {
   "name": "cz-conventional-changelog",
-  "version": "0.0.0-semantically-released.0",
+  "version": "0.0.0",
   "description": "Commitizen adapter following the conventional-changelog format.",
   "main": "index.js",
   "scripts": {
@@ -37,7 +37,7 @@
     "mock-require": "^3.0.3",
     "prettier": "^1.15.3",
     "semantic-release": "^15.13.3",
-    "semver": "^6.2.0"
+    "semver": "6.3.0"
   },
   "optionalDependencies": {
     "@commitlint/load": ">6.1.1"
