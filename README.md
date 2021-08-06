@@ -46,7 +46,7 @@ Like commitizen, you specify the configuration of cz-conventional-changelog thro
 
 ### Environment variables
 
-The following environment varibles can be used to override any default configuration or package.json based configuration.
+The following environment variables can be used to override any default configuration or package.json based configuration.
 
 * CZ_TYPE = defaultType
 * CZ_SCOPE = defaultScope
