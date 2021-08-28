@@ -337,6 +337,9 @@ describe('defaults', function() {
   it('disableSubjectLowerCase default', function() {
     expect(questionDefault('disableSubjectLowerCase')).to.be.undefined;
   });
+  it('defaultIncludeGitMessage default', function() {
+    expect(questionDefault('includeGitMessage')).to.be.false;
+  });
 });
 
 describe('prompts', function() {

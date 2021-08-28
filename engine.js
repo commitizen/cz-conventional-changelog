@@ -4,6 +4,7 @@ var wrap = require('word-wrap');
 var map = require('lodash.map');
 var longest = require('longest');
 var chalk = require('chalk');
+var fs = require('fs');
 
 var filter = function(array) {
   return array.filter(function(x) {
@@ -99,10 +100,14 @@ module.exports = function(options) {
           },
           default: options.defaultSubject,
           validate: function(subject, answers) {
-            var filteredSubject = filterSubject(subject, options.disableSubjectLowerCase);
+            var filteredSubject = filterSubject(
+              subject,
+              options.disableSubjectLowerCase
+            );
             return filteredSubject.length == 0
               ? 'subject is required'
-              : filteredSubject.length <= maxSummaryLength(options, answers)
+              : filteredSubject.length <=
+                maxSummaryLength(options, answers)
               ? true
               : 'Subject length must be less than or equal to ' +
                 maxSummaryLength(options, answers) +
@@ -111,7 +116,10 @@ module.exports = function(options) {
                 ' characters.';
           },
           transformer: function(subject, answers) {
-            var filteredSubject = filterSubject(subject, options.disableSubjectLowerCase);
+            var filteredSubject = filterSubject(
+              subject,
+              options.disableSubjectLowerCase
+            );
             var color =
               filteredSubject.length <= maxSummaryLength(options, answers)
                 ? chalk.green
@@ -119,7 +127,10 @@ module.exports = function(options) {
             return color('(' + filteredSubject.length + ') ' + subject);
           },
           filter: function(subject) {
-            return filterSubject(subject, options.disableSubjectLowerCase);
+            return filterSubject(
+              subject,
+              options.disableSubjectLowerCase
+            );
           }
         },
         {
@@ -159,7 +170,6 @@ module.exports = function(options) {
             return answers.isBreaking;
           }
         },
-
         {
           type: 'confirm',
           name: 'isIssueAffected',
@@ -174,27 +184,32 @@ module.exports = function(options) {
             'If issues are closed, the commit requires a body. Please enter a longer description of the commit itself:\n',
           when: function(answers) {
             return (
-              answers.isIssueAffected && !answers.body && !answers.breakingBody
+              answers.isIssueAffected &&
+              !answers.body &&
+              !answers.breakingBody
             );
           }
         },
         {
           type: 'input',
           name: 'issues',
-          message: 'Add issue references (e.g. "fix #123", "re #123".):\n',
+          message:
+            'Add issue references (e.g. "fix #123", "re #123".):\n',
           when: function(answers) {
             return answers.isIssueAffected;
           },
-          default: options.defaultIssues ? options.defaultIssues : undefined
+          default: options.defaultIssues
+            ? options.defaultIssues
+            : undefined
+        },
+        {
+          type: 'confirm',
+          name: 'includeGitMessage',
+          message: 'Do you want to append existing .gitmessage?',
+          default: false
         }
       ]).then(function(answers) {
-        var wrapOptions = {
-          trim: true,
-          cut: false,
-          newline: '\n',
-          indent: '',
-          width: options.maxLineWidth
-        };
+        var wrapOptions = { trim: true, cut: false, newline: '\n', indent: '', width: options.maxLineWidth };
 
         // parentheses are only needed when a scope is present
         var scope = answers.scope ? '(' + answers.scope + ')' : '';
@@ -207,14 +222,14 @@ module.exports = function(options) {
 
         // Apply breaking change prefix, removing it if already present
         var breaking = answers.breaking ? answers.breaking.trim() : '';
-        breaking = breaking
-          ? 'BREAKING CHANGE: ' + breaking.replace(/^BREAKING CHANGE: /, '')
-          : '';
+        breaking = breaking ? 'BREAKING CHANGE: ' + breaking.replace(/^BREAKING CHANGE: /, '') : '';
         breaking = breaking ? wrap(breaking, wrapOptions) : false;
 
         var issues = answers.issues ? wrap(answers.issues, wrapOptions) : false;
 
-        commit(filter([head, body, breaking, issues]).join('\n\n'));
+        var gitMessage = answers.includeGitMessage ? fs.readFileSync('./.git/.gitmessage', 'utf8') : '';
+
+        commit(filter([head, body, breaking, issues, gitMessage]).join('\n\n'));
       });
     }
   };
