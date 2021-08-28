@@ -38,6 +38,8 @@ var longIssues =
   'b b bb b bb b bb b bb b bb b bb b bb b bb b bb b bb b bb b bb b bb b bb b bb b bb b bb b bb b';
 var breakingChange = 'BREAKING CHANGE: ';
 var breaking = 'asdhdfkjhbakjdhjkashd adhfajkhs asdhkjdsh ahshd';
+var includeGitMessage = true;
+var gitMessage = 'my lovely git message';
 var longIssuesSplit =
   longIssues.slice(0, defaultOptions.maxLineWidth).trim() +
   '\n' +
@@ -47,6 +49,8 @@ var longIssuesSplit =
   '\n' +
   longIssues.slice(defaultOptions.maxLineWidth * 2, longIssues.length).trim();
 
+const mockfs = require('mock-fs');
+  
 describe('commit message', function() {
   it('only header w/ out scope', function() {
     expect(
@@ -254,6 +258,22 @@ describe('commit message', function() {
     ).to.equal(
       `${type}(${scope}): ${subject}\n\n${longBodySplit}\n\n${breakingChange}${breaking}\n\n${longIssuesSplit}`
     );
+  });
+
+  it('header, long body, breaking change (with prefix entered), long issues w/ scope and included git message', function() {
+    mockfs({ './.git': { '.gitmessage': gitMessage } });
+
+    expect(commitMessage({
+        type,
+        scope,
+        subject,
+        body: longBody,
+        breaking: `${breakingChange}${breaking}`,
+        issues: longIssues,
+        includeGitMessage
+      })).to.equal(`${type}(${scope}): ${subject}\n\n${longBodySplit}\n\n${breakingChange}${breaking}\n\n${longIssuesSplit}\n\n${gitMessage}`);
+
+      mockfs.restore();
   });
 });
 
