@@ -16,7 +16,7 @@
   },
   "engineStrict": true,
   "engines": {
-    "node": ">= 10"
+    "node": ">= 14.17"
   },
   "author": "Jim Cummins <jimthedev@gmail.com>",
   "license": "MIT",
@@ -36,7 +36,7 @@
     "mocha": "^6.2.0",
     "mock-require": "^3.0.3",
     "prettier": "^1.15.3",
-    "semantic-release": "^15.13.3",
+    "semantic-release": "^18.0.0",
     "semver": "^6.2.0"
   },
   "optionalDependencies": {
