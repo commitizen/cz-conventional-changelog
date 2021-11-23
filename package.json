@@ -30,10 +30,10 @@
   },
   "devDependencies": {
     "@types/chai": "4.2.22",
-    "@types/mocha": "5.2.7",
+    "@types/mocha": "8.2.3",
     "chai": "4.3.4",
     "cosmiconfig": "5.2.1",
-    "mocha": "6.2.3",
+    "mocha": "8.4.0",
     "mock-require": "3.0.3",
     "prettier": "1.19.1",
     "semantic-release": "^17.0.0",
