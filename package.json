@@ -36,7 +36,7 @@
     "mocha": "6.2.3",
     "mock-require": "3.0.3",
     "prettier": "1.19.1",
-    "semantic-release": "^15.13.3",
+    "semantic-release": "^17.2.3",
     "semver": "6.3.0"
   },
   "optionalDependencies": {
