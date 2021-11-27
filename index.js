@@ -3,6 +3,7 @@
 var engine = require('./engine');
 var conventionalCommitTypes = require('conventional-commit-types');
 var configLoader = require('commitizen').configLoader;
+var merge = require('lodash.merge');
 
 var config = configLoader.load() || {};
 var options = {
@@ -27,6 +28,10 @@ var options = {
     config.maxLineWidth ||
     100
 };
+
+if (!!config.extends) {
+  options = merge(options, config.extends);
+}
 
 (function(options) {
   try {
