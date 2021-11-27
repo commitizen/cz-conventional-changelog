@@ -30,7 +30,10 @@ var options = {
 };
 
 if (!!config.extends) {
-  options = merge(options, config.extends);
+  options = merge(
+    options,
+    typeof config.extends == 'string' ? require(config.extends) : config.extends
+  );
 }
 
 (function(options) {
