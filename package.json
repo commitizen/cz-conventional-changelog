@@ -29,7 +29,7 @@
     "word-wrap": "^1.0.3"
   },
   "devDependencies": {
-    "@types/chai": "4.2.22",
+    "@types/chai": "4.3.0",
     "@types/mocha": "9.0.0",
     "chai": "4.3.4",
     "cosmiconfig": "5.2.1",
