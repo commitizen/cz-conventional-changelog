@@ -30,7 +30,7 @@
   },
   "devDependencies": {
     "@types/chai": "4.3.0",
-    "@types/mocha": "9.0.0",
+    "@types/mocha": "9.1.0",
     "chai": "4.3.4",
     "cosmiconfig": "5.2.1",
     "mocha": "9.1.4",
