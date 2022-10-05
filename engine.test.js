@@ -101,6 +101,53 @@ describe('commit message', function() {
       )
     ).to.equal(`${type}(${upperCaseScope}): ${subject}\n\n${body}`);
   });
+  it('all caps subject, disableSubjectLowerCase off', function() {
+    var allCapsSubject = `XML changes`;
+    expect(
+      commitMessage(
+        {
+          type,
+          scope,
+          subject: allCapsSubject,
+          body
+        },
+        {
+          ...defaultOptions,
+          disableSubjectLowerCase: false // <---
+        }
+      )
+    ).to.equal(`${type}(${scope}): ${allCapsSubject}\n\n${body}`);
+  });
+  it('all caps subject, disableSubjectLowerCase on', function() {
+    var allCapsSubject = `XML changes`;
+    expect(
+      commitMessage(
+        {
+          type,
+          scope,
+          subject: allCapsSubject,
+          body
+        },
+        {
+          ...defaultOptions,
+          disableSubjectLowerCase: true // <---
+        }
+      )
+    ).to.equal(`${type}(${scope}): ${allCapsSubject}\n\n${body}`);
+  });
+  it('subject starts with number', function() {
+    var subjectWithNumber = `2nd iteration`;
+    expect(
+      commitMessage(
+        {
+          type,
+          scope,
+          subject: subjectWithNumber,
+          body
+        }
+      )
+    ).to.equal(`${type}(${scope}): ${subjectWithNumber}\n\n${body}`);
+  });
   it('header and body w/ uppercase subject', function() {
     var upperCaseSubject = subject.toLocaleUpperCase();
     expect(
