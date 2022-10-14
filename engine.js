@@ -126,8 +126,12 @@ module.exports = function(options) {
           type: 'input',
           name: 'body',
           message:
-            'Provide a longer description of the change: (press enter to skip)\n',
-          default: options.defaultBody
+          'Provide a longer description of the change: (press enter to skip)\n',
+          default: options.defaultBody,
+          transformer: function(body) {
+            var color = chalk.green;
+            return color('(' + body.length + ') ' + body);
+          }
         },
         {
           type: 'confirm',
