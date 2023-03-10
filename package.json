@@ -1,50 +1,44 @@
 {
-  "name": "cz-conventional-changelog",
-  "version": "0.0.1",
-  "description": "Commitizen adapter following the conventional-changelog format.",
+  "name": "cz-simple",
+  "version": "1.0.0",
+  "description": "A commitizen adapter for very simple commit messages 🙆",
   "main": "index.js",
   "scripts": {
+    "build": "tsc",
     "commit": "git-cz",
-    "test": "mocha *.test.js",
-    "format": "prettier --write *.js",
+    "format": "prettier --write src/*.ts",
     "semantic-release": "semantic-release"
   },
-  "homepage": "https://github.com/commitizen/cz-conventional-changelog",
+  "homepage": "https://github.com/aaimio/cz-simple",
   "repository": {
     "type": "git",
-    "url": "https://github.com/commitizen/cz-conventional-changelog.git"
+    "url": "https://github.com/aaimio/cz-simple"
   },
   "engineStrict": true,
   "engines": {
-    "node": ">= 10"
+    "node": ">= 18"
   },
   "author": "Jim Cummins <jimthedev@gmail.com>",
+  "contributors": [
+    "Aaron Imming <aaim@protonmail.com>"
+  ],
   "license": "MIT",
   "dependencies": {
     "chalk": "^3.0.0",
     "commitizen": "^4.0.3",
-    "conventional-commit-types": "^3.0.0",
-    "lodash.map": "^4.5.1",
-    "longest": "^2.0.1",
     "word-wrap": "^1.0.3"
   },
   "devDependencies": {
-    "@types/chai": "4.3.3",
-    "@types/mocha": "9.1.1",
-    "chai": "4.3.6",
-    "cosmiconfig": "5.2.1",
-    "mocha": "9.2.2",
-    "mock-require": "3.0.3",
+    "@types/inquirer": "^9.0.3",
+    "@types/node": "^18.15.0",
     "prettier": "1.19.1",
     "semantic-release": "19.0.5",
-    "semver": "6.3.0"
-  },
-  "optionalDependencies": {
-    "@commitlint/load": ">6.1.1"
+    "semver": "6.3.0",
+    "typescript": "^4.9.5"
   },
   "config": {
     "commitizen": {
-      "path": "./index.js"
+      "path": "./dist/index.js"
     }
   }
 }
