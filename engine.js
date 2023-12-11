@@ -3,7 +3,6 @@
 var wrap = require('word-wrap');
 var map = require('lodash.map');
 var longest = require('longest');
-var rightPad = require('right-pad');
 var chalk = require('chalk');
 
 var filter = function(array) {
@@ -22,9 +21,9 @@ var maxSummaryLength = function(options, answers) {
   return options.maxHeaderWidth - headerLength(answers);
 };
 
-var filterSubject = function(subject) {
+var filterSubject = function(subject, disableSubjectLowerCase) {
   subject = subject.trim();
-  if (subject.charAt(0).toLowerCase() !== subject.charAt(0)) {
+  if (!disableSubjectLowerCase && subject.charAt(0).toLowerCase() !== subject.charAt(0)) {
     subject =
       subject.charAt(0).toLowerCase() + subject.slice(1, subject.length);
   }
@@ -43,7 +42,7 @@ module.exports = function(options) {
   var length = longest(Object.keys(types)).length + 1;
   var typeChoices = map(types, function(type, key) {
     return {
-      name: rightPad(key + ':', length) + ' ' + type.description,
+      name: (key + ':').padEnd(length) + ' ' + type.description,
       value: key
     };
   });
@@ -122,10 +121,6 @@ module.exports = function(options) {
             {
               type: 'input',
               name: 'subject',
-              when: function(answers) {
-                Object.assign(answers, firstAnswers);
-                return true;
-              },
               message: function(answers) {
                 return (
                   'Write a short, imperative tense description of the change (max ' +
@@ -135,7 +130,7 @@ module.exports = function(options) {
               },
               default: options.defaultSubject,
               validate: function(subject, answers) {
-                var filteredSubject = filterSubject(subject);
+                var filteredSubject = filterSubject(subject, options.disableSubjectLowerCase);
                 return filteredSubject.length == 0
                   ? 'subject is required'
                   : filteredSubject.length <= maxSummaryLength(options, answers)
@@ -147,7 +142,7 @@ module.exports = function(options) {
                     ' characters.';
               },
               transformer: function(subject, answers) {
-                var filteredSubject = filterSubject(subject);
+                var filteredSubject = filterSubject(subject, options.disableSubjectLowerCase);
                 var color =
                   filteredSubject.length <= maxSummaryLength(options, answers)
                     ? chalk.green
@@ -155,7 +150,7 @@ module.exports = function(options) {
                 return color('(' + filteredSubject.length + ') ' + subject);
               },
               filter: function(subject) {
-                return filterSubject(subject);
+                return filterSubject(subject, options.disableSubjectLowerCase);
               }
             },
             {
