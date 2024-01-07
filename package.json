@@ -44,7 +44,21 @@
   },
   "config": {
     "commitizen": {
-      "path": "./index.js"
+      "path": "./index.js",
+      "scopes": {
+        "deps": {
+          "description": "Depedency changes",
+          "title": "Dependencies"
+        },
+        "engine": {
+          "description": "Engine-level changes",
+          "title": "Engine"
+        },
+        "readme": {
+          "description": "README changes",
+          "title": "README"
+        }
+      }
     }
   }
 }

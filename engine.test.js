@@ -355,6 +355,21 @@ describe('prompts', function() {
   });
 });
 
+describe('scope', function () {
+  it('commit scope prompts with input when scopes option is undefined', function () {
+    expect(getQuestion('scope', { types })).to.have.property('type', 'input');
+  });
+  it('commit scope prompts with list when scopes option is defined', function () {
+    var scopes = {
+      config: {
+        description: 'Configuration',
+        title: 'Configuration',
+      }
+    };
+    expect(getQuestion('scope', { types, scopes })).to.have.property('type', 'list');
+  });
+});
+
 describe('transformation', function() {
   it('subject w/ character count', () =>
     expect(
