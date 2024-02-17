@@ -25,7 +25,8 @@ var options = {
     (process.env.CZ_MAX_LINE_WIDTH &&
       parseInt(process.env.CZ_MAX_LINE_WIDTH)) ||
     config.maxLineWidth ||
-    100
+    100,
+    scopes: config.scopes || {}
 };
 
 (function(options) {

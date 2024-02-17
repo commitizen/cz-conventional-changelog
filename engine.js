@@ -33,19 +33,21 @@ var filterSubject = function(subject, disableSubjectLowerCase) {
   return subject;
 };
 
+var mapToInquirerChoices = function (definitions) {
+  var maxLength = longest(Object.keys(definitions)).length + 1;
+  return map(definitions, function (definition, key) {
+    return {
+      name: (key + ':').padEnd(maxLength) + ' ' + definition.description,
+      value: key,
+    }
+  });
+};
+
 // This can be any kind of SystemJS compatible module.
 // We use Commonjs here, but ES6 or AMD would do just
 // fine.
 module.exports = function(options) {
-  var types = options.types;
-
-  var length = longest(Object.keys(types)).length + 1;
-  var choices = map(types, function(type, key) {
-    return {
-      name: (key + ':').padEnd(length) + ' ' + type.description,
-      value: key
-    };
-  });
+  var isUsingCustomScopes = options.scopes && Object.keys(options.scopes).length > 0;
 
   return {
     // When a user runs `git cz`, prompter will
@@ -72,7 +74,7 @@ module.exports = function(options) {
           type: 'list',
           name: 'type',
           message: "Select the type of change that you're committing:",
-          choices: choices,
+          choices: mapToInquirerChoices(options.types),
           default: options.defaultType
         },
         {
@@ -87,7 +89,13 @@ module.exports = function(options) {
               : value.trim().toLowerCase();
           }
         },
-        {
+        isUsingCustomScopes ? {
+          type: 'list',
+          name: 'scope',
+          message: "Select the scope of the change that you're committing:",
+          choices: mapToInquirerChoices(options.scopes),
+          default: options.defaultScope
+        } : {
           type: 'input',
           name: 'subject',
           message: function(answers) {

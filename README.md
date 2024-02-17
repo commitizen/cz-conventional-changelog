@@ -37,12 +37,36 @@ Like commitizen, you specify the configuration of cz-conventional-changelog thro
                 "title": "Features"
               },
               ...
-            }
+            },
+            "scopes": {}
         }
     }
 // ...
 }
 ```
+
+#### Custom Scopes
+
+Following the example for custom types, you can build custom scopes in the package.json's `config.commitizen` key.
+
+```json5
+{
+  // ...
+  "config": {
+    "commitizen": {
+      "scopes": {
+        ...
+        "config": {
+          "description": "A configuration level change",
+          "title": "Configuration"
+        },
+        ...
+      }
+    }
+  }
+}
+```
+
 
 ### Environment variables
 
