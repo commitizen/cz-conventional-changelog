@@ -25,7 +25,11 @@ var options = {
     (process.env.CZ_MAX_LINE_WIDTH &&
       parseInt(process.env.CZ_MAX_LINE_WIDTH)) ||
     config.maxLineWidth ||
-    100
+    100,
+  allowedScopes:
+    (process.env.CZ_ALLOWED_SCOPES && process.env.CZ_ALLOWED_SCOPES.split(',')) ||
+    config.allowedScopes ||
+    []
 };
 
 (function(options) {
@@ -34,6 +38,8 @@ var options = {
     commitlintLoad().then(function(clConfig) {
       if (clConfig.rules) {
         var maxHeaderLengthRule = clConfig.rules['header-max-length'];
+        var scopeEnumRule = clConfig.rules['scope-enum'];
+
         if (
           typeof maxHeaderLengthRule === 'object' &&
           maxHeaderLengthRule.length >= 3 &&
@@ -41,6 +47,15 @@ var options = {
           !config.maxHeaderWidth
         ) {
           options.maxHeaderWidth = maxHeaderLengthRule[2];
+        }
+
+        if (
+          typeof scopeEnumRule === 'object' &&
+          scopeEnumRule.length >= 3 &&
+          !process.env.CZ_ALLOWED_SCOPES &&
+          !(config.allowedScopes && config.allowedScopes.length)
+        ) {
+          options.allowedScopes = scopeEnumRule[2];
         }
       }
     });
