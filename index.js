@@ -25,7 +25,8 @@ var options = {
     (process.env.CZ_MAX_LINE_WIDTH &&
       parseInt(process.env.CZ_MAX_LINE_WIDTH)) ||
     config.maxLineWidth ||
-    100
+    100,
+    skipQuestions: process.env.CZ_SKIP_QUESTIONS || config.skipQuestions
 };
 
 (function(options) {
