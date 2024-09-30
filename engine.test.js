@@ -480,6 +480,88 @@ describe('commitlint config header-max-length', function() {
     });
   }
 });
+
+describe('commitlint config scope-enum', function() {
+  //commitlint config parser only supports Node 6.0.0 and higher
+  if (semver.gte(process.version, '6.0.0')) {
+    function mockOptions(allowedScopes) {
+      var options = undefined;
+      mock('./engine', function(opts) {
+        options = opts;
+      });
+      if (allowedScopes) {
+        mock('cosmiconfig', function() {
+          return {
+            load: function(cwd) {
+              return {
+                filepath: cwd + '/.commitlintrc.js',
+                config: {
+                  rules: {
+                    'scope-enum': [2, 'always', allowedScopes]
+                  }
+                }
+              };
+            }
+          };
+        });
+      }
+
+      mock.reRequire('./index');
+      try {
+        return mock
+          .reRequire('@commitlint/load')()
+          .then(function() {
+            return options;
+          });
+      } catch (err) {
+        return Promise.resolve(options);
+      }
+    }
+
+    afterEach(function() {
+      delete require.cache[require.resolve('./index')];
+      delete require.cache[require.resolve('@commitlint/load')];
+      delete process.env.CZ_ALLOWED_SCOPES;
+      mock.stopAll();
+    });
+
+    it('with no environment or commitizen config override', function() {
+      return mockOptions(['client', 'server']).then(function(options) {
+        expect(options).to.have.deep.property('allowedScopes', ['client', 'server']);
+      });
+    });
+
+    it('with environment variable override', function() {
+      process.env.CZ_ALLOWED_SCOPES = 'other,scopes';
+      return mockOptions(['client', 'server']).then(function(options) {
+        expect(options).to.have.deep.property('allowedScopes', ['other', 'scopes']);
+      });
+    });
+
+    it('with commitizen config override', function() {
+      mock('commitizen', {
+        configLoader: {
+          load: function() {
+            return {
+              allowedScopes: ['other', 'scopes']
+            };
+          }
+        }
+      });
+      return mockOptions(['client', 'server']).then(function(options) {
+        expect(options).to.have.deep.property('allowedScopes', ['other', 'scopes']);
+      });
+    });
+  } else {
+    //Node 4 doesn't support commitlint so the config value should remain the same
+    it('default value for Node 4', function() {
+      return mockOptions(['other', 'scopes']).then(function(options) {
+        expect(options).to.have.deep.property('allowedScopes', []);
+      });
+    });
+  }
+});
+
 function commitMessage(answers, options) {
   options = options || defaultOptions;
   var result = null;
@@ -490,6 +572,13 @@ function commitMessage(answers, options) {
           then: function(finalizer) {
             processQuestions(questions, answers, options);
             finalizer(answers);
+
+            return {
+              then: function(finalizer) {
+                processQuestions(questions, answers, options);
+                finalizer(answers);
+              }
+            };
           }
         };
       }
@@ -526,9 +615,15 @@ function getQuestions(options) {
   var result = null;
   engine(options).prompter({
     prompt: function(questions) {
-      result = questions;
+      result = result ? result.concat(questions) : questions;
       return {
-        then: function() {}
+        then: function(secondRun) {
+          secondRun({});
+
+          return {
+            then: function() {}
+          };
+        }
       };
     }
   });
