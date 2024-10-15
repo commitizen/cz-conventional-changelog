@@ -17,13 +17,31 @@ var headerLength = function(answers) {
   );
 };
 
+var isLetter = function(character) {
+  if (typeof character !== "string" || !character.trim()) {
+    return false
+  }
+  return character.toUpperCase() !== character.toLowerCase();
+}
+
+var isUppercaseLetter = function(character) {
+  if (typeof character !== "string" || !character.trim()) {
+    return false
+  }
+  return character === character.toUpperCase();
+}
+
 var maxSummaryLength = function(options, answers) {
   return options.maxHeaderWidth - headerLength(answers);
 };
 
 var filterSubject = function(subject, disableSubjectLowerCase) {
   subject = subject.trim();
-  if (!disableSubjectLowerCase && subject.charAt(0).toLowerCase() !== subject.charAt(0)) {
+  if (
+    !disableSubjectLowerCase &&
+    subject.charAt(0).toLowerCase() !== subject.charAt(0) &&
+    (!subject.charAt(1) || !isLetter(subject.charAt(1)) || !isUppercaseLetter(subject.charAt(1)))
+  ) {
     subject =
       subject.charAt(0).toLowerCase() + subject.slice(1, subject.length);
   }
