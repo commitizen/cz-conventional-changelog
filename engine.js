@@ -92,7 +92,7 @@ module.exports = function(options) {
           name: 'subject',
           message: function(answers) {
             return (
-              'Write a short, imperative tense description of the change (max ' +
+              'Write a short description of the change as a command/instruction (max ' +
               maxSummaryLength(options, answers) +
               ' chars):\n'
             );
