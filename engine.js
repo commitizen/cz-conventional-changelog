@@ -33,6 +33,10 @@ var filterSubject = function(subject, disableSubjectLowerCase) {
   return subject;
 };
 
+var getBody = function(answers) {
+  return answers.body || answers.breakingBody || answers.issuesBody
+}
+
 // This can be any kind of SystemJS compatible module.
 // We use Commonjs here, but ES6 or AMD would do just
 // fine.
@@ -203,7 +207,8 @@ module.exports = function(options) {
         var head = answers.type + scope + ': ' + answers.subject;
 
         // Wrap these lines at options.maxLineWidth characters
-        var body = answers.body ? wrap(answers.body, wrapOptions) : false;
+        var body = getBody(answers)
+        body = body ? wrap(body, wrapOptions) : false;
 
         // Apply breaking change prefix, removing it if already present
         var breaking = answers.breaking ? answers.breaking.trim() : '';
