@@ -52,6 +52,7 @@ The following environment variables can be used to override any default configur
 * CZ_SCOPE = defaultScope
 * CZ_SUBJECT = defaultSubject
 * CZ_BODY = defaultBody
+* CZ_ISSUES = defaultIssues
 * CZ_MAX_HEADER_WIDTH = maxHeaderWidth
 * CZ_MAX_LINE_WIDTH = maxLineWidth
 
