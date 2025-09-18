@@ -1,7 +1,6 @@
 'format cjs';
 
 var wrap = require('word-wrap');
-var map = require('lodash.map');
 var longest = require('longest');
 var chalk = require('chalk');
 
@@ -37,12 +36,11 @@ var filterSubject = function(subject, disableSubjectLowerCase) {
 // We use Commonjs here, but ES6 or AMD would do just
 // fine.
 module.exports = function(options) {
-  var types = options.types;
-
-  var length = longest(Object.keys(types)).length + 1;
-  var choices = map(types, function(type, key) {
+  var keys = Object.keys(options.types);
+  var length = longest(keys).length + 1;
+  var choices = keys.map(function(key) {
     return {
-      name: (key + ':').padEnd(length) + ' ' + type.description,
+      name: (key + ':').padEnd(length) + ' ' + options.types[key].description,
       value: key
     };
   });
