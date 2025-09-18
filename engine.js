@@ -1,7 +1,6 @@
 'format cjs';
 
 var wrap = require('word-wrap');
-var longest = require('longest');
 var chalk = require('chalk');
 
 var filter = function(array) {
@@ -32,12 +31,24 @@ var filterSubject = function(subject, disableSubjectLowerCase) {
   return subject;
 };
 
+/**
+ * @param input {string[]}
+ * @return {number}
+ */
+function getLongestLength(input) {
+  var longest = Object.keys(input).reduce(function(maxLength, key) {
+    return Math.max(maxLength, key.length);
+  }, 0);
+
+  return longest + 1;
+}
+
 // This can be any kind of SystemJS compatible module.
 // We use Commonjs here, but ES6 or AMD would do just
 // fine.
 module.exports = function(options) {
   var keys = Object.keys(options.types);
-  var length = longest(keys).length + 1;
+  var length = getLongestLength(keys);
   var choices = keys.map(function(key) {
     return {
       name: (key + ':').padEnd(length) + ' ' + options.types[key].description,
